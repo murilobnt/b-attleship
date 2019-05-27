@@ -1,0 +1,88 @@
+<Machine name='Dimensions_ctx' type='abstraction'>
+<Concrete_Constants>
+<Attr>
+<Pos l='8' c='1' s='18'/>
+</Attr>
+<Id value='dim_x' typref='2701647786'>
+<Attr>
+<Pos l='9' c='5' s='5'/>
+</Attr>
+</Id>
+<Id value='dim_y' typref='2701647786'>
+<Attr>
+<Pos l='9' c='12' s='5'/>
+</Attr>
+</Id>
+<Id value='sz' typref='2701647786'>
+<Attr>
+<Pos l='9' c='19' s='2'/>
+</Attr>
+</Id>
+</Concrete_Constants>
+<Properties>
+<Attr>
+<Pos l='11' c='1' s='10'/>
+</Attr>
+<Nary_Pred op='&amp;'>
+<Exp_Comparison op=':'>
+<Attr>
+<Pos l='12' c='11' s='1'/>
+</Attr>
+<Id value='dim_x' typref='2701647786'>
+<Attr>
+<Pos l='12' c='5' s='5'/>
+</Attr>
+</Id>
+<Id value='NAT' typref='3603043417'>
+<Attr>
+<Pos l='12' c='13' s='3'/>
+</Attr>
+</Id>
+</Exp_Comparison>
+<Exp_Comparison op=':'>
+<Attr>
+<Pos l='12' c='25' s='1'/>
+</Attr>
+<Id value='dim_y' typref='2701647786'>
+<Attr>
+<Pos l='12' c='19' s='5'/>
+</Attr>
+</Id>
+<Id value='NAT' typref='3603043417'>
+<Attr>
+<Pos l='12' c='27' s='3'/>
+</Attr>
+</Id>
+</Exp_Comparison>
+<Exp_Comparison op=':'>
+<Attr>
+<Pos l='12' c='36' s='1'/>
+</Attr>
+<Id value='sz' typref='2701647786'>
+<Attr>
+<Pos l='12' c='33' s='2'/>
+</Attr>
+</Id>
+<Id value='NAT' typref='3603043417'>
+<Attr>
+<Pos l='12' c='38' s='3'/>
+</Attr>
+</Id>
+</Exp_Comparison>
+</Nary_Pred>
+</Properties>
+<Initialisation>
+<Skip/>
+</Initialisation>
+<TypeInfos>
+<Type id='2701647786'>
+<Id value='INTEGER'/>
+</Type>
+<Type id='3603043417'>
+<Unary_Exp op='POW'>
+<Id value='INTEGER'/>
+</Unary_Exp>
+</Type>
+</TypeInfos>
+
+</Machine>

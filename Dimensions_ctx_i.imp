@@ -1,0 +1,14 @@
+/* Dimensions_ctx_i
+ * Author: murilobento
+ * Creation date: 27/05/2019
+ */
+
+IMPLEMENTATION Dimensions_ctx_i
+REFINES Dimensions_ctx
+
+VALUES
+    grid_dim_x = 10;
+    grid_dim_y = 10;
+    grid_sz = grid_dim_x * grid_dim_y
+
+ END

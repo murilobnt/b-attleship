@@ -1,0 +1,57 @@
+<Machine name='Dimensions_ctx_i' type='implementation'>
+<Abstraction>Dimensions_ctx</Abstraction>
+<Values>
+<Attr>
+<Pos l='9' c='1' s='6'/>
+</Attr>
+<Valuation ident='dim_x' typref='2701647786'>
+<Attr>
+<Pos l='10' c='5' s='5'/>
+</Attr>
+<Integer_Literal value='10' typref='2701647786'>
+<Attr>
+<Pos l='10' c='13' s='2'/>
+</Attr>
+</Integer_Literal>
+</Valuation>
+<Valuation ident='dim_y' typref='2701647786'>
+<Attr>
+<Pos l='11' c='5' s='5'/>
+</Attr>
+<Integer_Literal value='10' typref='2701647786'>
+<Attr>
+<Pos l='11' c='13' s='2'/>
+</Attr>
+</Integer_Literal>
+</Valuation>
+<Valuation ident='sz' typref='2701647786'>
+<Attr>
+<Pos l='12' c='5' s='2'/>
+</Attr>
+<Binary_Exp op='*' typref='2701647786'>
+<Attr>
+<Pos l='12' c='16' s='1'/>
+</Attr>
+<Id value='dim_x' typref='2701647786'>
+<Attr>
+<Pos l='12' c='10' s='5'/>
+</Attr>
+</Id>
+<Id value='dim_y' typref='2701647786'>
+<Attr>
+<Pos l='12' c='18' s='5'/>
+</Attr>
+</Id>
+</Binary_Exp>
+</Valuation>
+</Values>
+<Initialisation>
+<Skip/>
+</Initialisation>
+<TypeInfos>
+<Type id='2701647786'>
+<Id value='INTEGER'/>
+</Type>
+</TypeInfos>
+
+</Machine>
