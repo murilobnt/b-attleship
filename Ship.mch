@@ -9,14 +9,11 @@ SEES
     Ship_ctx,
     Dimensions_ctx
 
-VARIABLES
+CONSTANTS
     ship_size
     
-INVARIANT
-    ship_size : SHIP_TYPE --> 1..4
-    
-INITIALISATION
-    ship_size :: SHIP_TYPE --> 1..4
+PROPERTIES
+    ship_size : SHIP_TYPE >-> SHIP_SIZE
     
 OPERATIONS
     rr <-- get_ship_size(ss) =

@@ -1,0 +1,12 @@
+IMPLEMENTATION Ship_ctx_i
+REFINES Ship_ctx
+
+VALUES
+    SHIP_TYPE = 1..4;
+    SHIP_SIZE = 1..4;
+    battleship = 1;
+    cruiser = 2;
+    destroyer = 3;
+    submarine = 4
+END
+

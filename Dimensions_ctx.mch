@@ -9,6 +9,6 @@ CONSTANTS
     grid_dim_x, grid_dim_y, grid_sz
     
 PROPERTIES
-    grid_dim_x : NAT & grid_dim_y : NAT & grid_sz : NAT
+    grid_dim_x : NAT & grid_dim_y : NAT & grid_sz = grid_dim_x * grid_dim_y
 
 END
