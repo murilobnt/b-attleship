@@ -6,18 +6,18 @@ MACHINE
     Game
     
 SEES
-    Dimensions
+    Dimensions_ctx
     
 SETS
-    LOL = {yes, no}
+    Answer = {yes, no}
 
 VARIABLES
     grid_self
     
 INVARIANT
-    grid_self : 0..sz --> LOL
+    grid_self : 0..grid_sz --> Answer
     
 INITIALISATION
-    grid_self :: 0..sz --> LOL
+    grid_self :: 0..grid_sz --> Answer
 
 END
