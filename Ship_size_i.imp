@@ -1,0 +1,15 @@
+/* Ship_size_i
+ * Author: muril
+ * Creation date: 29/05/2019
+ */
+
+IMPLEMENTATION Ship_size_i
+REFINES Ship_size
+
+SEES
+    Ship_ctx
+
+VALUES
+    ship_size = {(battleship |-> 4),(cruiser |-> 3),(destroyer |-> 2),(submarine |-> 1)}
+
+ END

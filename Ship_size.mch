@@ -6,19 +6,12 @@ MACHINE
     Ship_size
     
 SEES
-    Ship_ctx,
-    Dimensions_ctx
+    Ship_ctx
 
 CONSTANTS
     ship_size
     
 PROPERTIES
-    ship_size : SHIP_TYPE >-> SHIP_SIZE
+    ship_size : SHIP_TYPE --> 1..4
     
-OPERATIONS
-    rr <-- get_ship_size(ss) =
-        PRE ss : SHIP_TYPE
-        THEN
-            rr := ship_size(ss)
-        END
 END
