@@ -1,0 +1,14 @@
+/* Player_i
+ * Author: muril
+ * Creation date: 05/06/2019
+ */
+
+IMPLEMENTATION Player_i
+REFINES Player
+
+VALUES
+    ships1 = 0..9;
+    ships2 = 10..19;
+    ships = 0..19
+
+ END

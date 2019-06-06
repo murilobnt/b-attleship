@@ -7,7 +7,8 @@ SEES
     Ship_ctx,
     Dimensions_ctx,
     Ship_size,
-    Grid_cell
+    Grid_cell,
+    Player
 
 SETS
     ORIENTATION = {vertical, horizontal};
@@ -20,32 +21,26 @@ PROPERTIES
     water_c : NAT
 
 VARIABLES
-    ships,
-    ship_index,
     ship_type_r,
     ship_health,
     grid_to_ship
 
 INVARIANT
-    ships <: NAT &
-    ship_index : NAT &
     ship_type_r : ships --> SHIP_TYPE & 
     ship_health : ships --> 0..4 &
-    grid_to_ship : 0..grid_sz - 1 --> ships \/ {water_c} 
+    grid_to_ship : 0..grid_sz - 1 --> ships \/ {water_c}
 
 INITIALISATION
-    ships := {} || 
     ship_type_r := {} || 
     ship_health := {} ||
-    grid_to_ship := (0..grid_sz - 1) * {water_c} || 
-    ship_index := 0
+    grid_to_ship := (0..grid_sz - 1) * {water_c}
 
 OPERATIONS
-    add_ship(tt, oo, pp) =
-    PRE tt : SHIP_TYPE & 
+    add_ship(ii, tt, oo, pp) =
+    PRE ii : ships &
+        tt : SHIP_TYPE & 
         oo : ORIENTATION & 
         pp : 0..grid_sz - 1 & 
-        ship_index + 1 : NAT & 
         grid_to_ship(pp) /: ships &
         !xx.(xx : 1..ship_size(tt) - 1 => 
                 (oo = horizontal & (pp mod grid_dim_x) + xx < grid_dim_x & 
@@ -57,16 +52,14 @@ OPERATIONS
         LET hh, vv BE 
             hh = ran(%xx . (xx : 0..ship_size(tt) - 1 | pp + xx)) & 
             vv = ran(%xx . (xx : 0..ship_size(tt) - 1 | pp + (xx * grid_dim_y)))
-        IN
-            ships := ships \/ {ship_index} || 
-            ship_health(ship_index) := ship_size(tt) ||
-            ship_type_r(ship_index) := tt || 
+        IN 
+            ship_health(ii) := ship_size(tt) ||
+            ship_type_r(ii) := tt || 
             IF oo = horizontal THEN
-                grid_to_ship := grid_to_ship <+ (hh * {ship_index})
+                grid_to_ship := grid_to_ship <+ (hh * {ii})
             ELSE
-                grid_to_ship := grid_to_ship <+ (vv * {ship_index})
-            END ||
-            ship_index := ship_index + 1
+                grid_to_ship := grid_to_ship <+ (vv * {ii})
+            END
         END
     END;
     

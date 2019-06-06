@@ -22,6 +22,8 @@ OPERATIONS
     update_atk_grid(pp, cc) =
     PRE pp : 0..grid_sz - 1 & cc : CELL THEN
         atk_grid(pp) := cc
-    END
+    END;
     
+    ag <-- get_attack_grid =
+        ag := atk_grid
 END
