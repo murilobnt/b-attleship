@@ -7,23 +7,35 @@ MACHINE
     
 SEES 
     Grid_cell,
-    Dimensions_ctx
+    Dimensions_ctx,
+    Attack_who_ctx
     
 VARIABLES
-    atk_grid
+    atk_grid1,
+    atk_grid2
     
 INVARIANT
-    atk_grid : 0..grid_sz - 1 --> CELL
+    atk_grid1 : 0..grid_sz - 1 --> CELL &
+    atk_grid2 : 0..grid_sz - 1 --> CELL
 
 INITIALISATION
-    atk_grid := (0..grid_sz - 1) * {undiscovered}
+    atk_grid1 := (0..grid_sz - 1) * {undiscovered} || 
+    atk_grid2 := (0..grid_sz - 1) * {undiscovered}
     
 OPERATIONS
-    update_atk_grid(pp, cc) =
-    PRE pp : 0..grid_sz - 1 & cc : CELL THEN
-        atk_grid(pp) := cc
+    update_atk_grid(pp, cc, to) =
+    PRE pp : 0..grid_sz - 1 & cc : CELL & to : ATTACK_WHO 
+    THEN
+        IF to = p1 THEN
+            atk_grid1(pp) := cc
+        ELSE
+            atk_grid2(pp) := cc
+        END
     END;
     
-    ag <-- get_attack_grid =
-        ag := atk_grid
+    ag <-- get_attack_grid1 =
+        ag := atk_grid1;
+        
+    ag <-- get_attack_grid2 =
+        ag := atk_grid2
 END
