@@ -1,3 +1,0 @@
-﻿THEORY User_Pass IS
-Operation(ValuesLemmas) & ff(0) & mp & pp
-END 

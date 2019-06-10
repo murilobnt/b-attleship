@@ -23,17 +23,29 @@ SETS
 VARIABLES
     ship_health,
     grid_to_ship1,
-    grid_to_ship2
+    grid_to_ship2,
+    attacked1,
+    attacked2,
+    ready1,
+    ready2
 
 INVARIANT
-    ship_health : SHIPS --> 0..4 &
+    ship_health : 0..20 --> 0..4 &
     grid_to_ship1 : 0..grid_sz - 1 --> ships1 &
-    grid_to_ship2 : 0..grid_sz - 1 --> ships2 
+    grid_to_ship2 : 0..grid_sz - 1 --> ships2 &
+    attacked1 : 0..grid_sz - 1 --> BOOL &
+    attacked2 : 0..grid_sz - 1 --> BOOL &
+    ready1 : BOOL &
+    ready2 : BOOL
 
 INITIALISATION
-    ship_health := %xx . (xx : SHIPS | ship_size(ship_type_r(xx))) ||
+    ship_health := %xx . (xx : 0..20 | ship_size(ship_type_r(xx))) ||
     grid_to_ship1 := (0..grid_sz - 1) * {water_c} ||
-    grid_to_ship2 := (0..grid_sz - 1) * {water_c}
+    grid_to_ship2 := (0..grid_sz - 1) * {water_c} ||
+    attacked1 := (0..grid_sz - 1) * {FALSE} ||
+    attacked2 := (0..grid_sz - 1) * {FALSE} ||
+    ready1 := FALSE ||
+    ready2 := FALSE
 
 OPERATIONS
     rr <-- check_win_condition(to) =
@@ -54,17 +66,17 @@ OPERATIONS
     END;
     
     add_ship(ii, oo, pp) =
-    PRE ii : SHIPS &
+    PRE ii : 0..20 &
         oo : ORIENTATION & 
         pp : 0..grid_sz - 1 &
-        (ii : ships1 => 
+        (ii : ships1 => ii /: ran(grid_to_ship1) &
             (!xx.(xx : 1..ship_size(ship_type_r(ii)) - 1 => 
                 (oo = horizontal & (pp mod grid_dim_x) + xx < grid_dim_x & 
                     ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship1((pp mod grid_dim_x) + xx) = water_c)) or 
                 (oo = vertical & pp + (xx * grid_dim_y) < grid_sz & 
                     (pp + (xx * grid_dim_y) < grid_sz => grid_to_ship1(pp + (xx * grid_dim_y)) = water_c))
         ))) &
-        (ii : ships2 => 
+        (ii : ships2 => ii /: ran(grid_to_ship2) &
             (!xx.(xx : 1..ship_size(ship_type_r(ii)) - 1 => 
                 (oo = horizontal & (pp mod grid_dim_x) + xx < grid_dim_x & 
                     ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship2((pp mod grid_dim_x) + xx) = water_c)) or 
@@ -94,32 +106,48 @@ OPERATIONS
     
     rr <-- attack(pp, to) =
     PRE pp : 0..grid_sz - 1 &
+        !xx . (xx : (ships1 - {water_c}) => xx : ran(grid_to_ship1)) &
+        !xx . (xx : (ships2 - {water_c}) => xx : ran(grid_to_ship2)) &
         to : ATTACK_WHO &
-        (to = p1 => (grid_to_ship1(pp) /= water_c => ship_health(grid_to_ship1(pp)) > 0)) &
-        (to = p2 => (grid_to_ship2(pp) /= water_c => ship_health(grid_to_ship2(pp)) > 0))
+        (to = p1 => attacked1(pp) = FALSE & 
+                    (grid_to_ship1(pp) /= water_c => ship_health(grid_to_ship1(pp)) > 0)) &
+        (to = p2 => attacked2(pp) = FALSE &
+                    (grid_to_ship2(pp) /= water_c => ship_health(grid_to_ship2(pp)) > 0))
     THEN
         IF to = p1 THEN
             IF grid_to_ship1(pp) /= water_c THEN
                 ship_health(grid_to_ship1(pp)) := ship_health(grid_to_ship1(pp)) - 1 ||
                 IF ship_health(grid_to_ship1(pp)) - 1 = 0 THEN
-                    rr := destroyed || update_atk_grid(pp, ship, to)
+                    rr := destroyed || 
+                    update_atk_grid(pp, ship, to)
+//                    grid_to_ship1(pp) := water_c ||
+//                    remove_ship_from_1(grid_to_ship1(pp))
                 ELSE
-                    rr := hit || update_atk_grid(pp, ship, to)
+                    rr := hit || 
+                    update_atk_grid(pp, ship, to)
+//                    grid_to_ship1(pp) := water_c
                 END
             ELSE
                 rr := miss || update_atk_grid(pp, water, to)
-            END
+            END ||
+            attacked1(pp) := TRUE
         ELSE
             IF grid_to_ship2(pp) /= water_c THEN
                 ship_health(grid_to_ship2(pp)) := ship_health(grid_to_ship2(pp)) - 1 ||
                 IF ship_health(grid_to_ship2(pp)) - 1 = 0 THEN
-                    rr := destroyed || update_atk_grid(pp, ship, to)
+                    rr := destroyed || 
+                    update_atk_grid(pp, ship, to)
+//                    grid_to_ship2(pp) := water_c ||
+//                    remove_ship_from_2(grid_to_ship2(pp))
                 ELSE
-                    rr := hit || update_atk_grid(pp, ship, to)
+                    rr := hit || 
+                    update_atk_grid(pp, ship, to)
+                    //grid_to_ship2(pp) := water_c
                 END
             ELSE
                 rr := miss || update_atk_grid(pp, water, to)
-            END
+            END ||
+            attacked2(pp) := TRUE
         END
     END
 

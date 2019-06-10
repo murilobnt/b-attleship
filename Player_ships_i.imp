@@ -14,8 +14,8 @@ CONCRETE_VARIABLES
     ships2_i
     
 INVARIANT
-    ships1_i : 0..9 --> SHIPS &
-    ships2_i : 0..9 --> SHIPS &
+    ships1_i : 0..9 --> 0..19 &
+    ships2_i : 0..9 --> 0..19 &
     ships1 = ran(ships1_i) &
     ships2 = ran(ships2_i)
     

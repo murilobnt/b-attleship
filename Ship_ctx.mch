@@ -16,7 +16,7 @@ CONSTANTS
     water_c
     
 PROPERTIES
-    ship_type_r : SHIPS --> SHIP_TYPE &
-    water_c : SHIPS
+    ship_type_r : 0..20 --> SHIP_TYPE &
+    water_c : 0..20
 
 END
