@@ -9,6 +9,10 @@ INCLUDES
     Attack_grid,
     Player_ships
 
+PROMOTES
+    get_attack_grid1,
+    get_attack_grid2
+
 SEES
     Ship_ctx,
     Dimensions_ctx,
@@ -26,6 +30,7 @@ VARIABLES
     grid_to_ship2,
     attacked1,
     attacked2,
+    to_be_destroyed,
     ready
 
 INVARIANT
@@ -34,6 +39,7 @@ INVARIANT
     grid_to_ship2 : 0..grid_sz - 1 --> ships2 &
     attacked1 : 0..grid_sz - 1 --> BOOL &
     attacked2 : 0..grid_sz - 1 --> BOOL &
+    to_be_destroyed : 0..20 <-> 0..grid_sz - 1 &
     ready : BOOL
 
 INITIALISATION
@@ -42,6 +48,7 @@ INITIALISATION
     grid_to_ship2 := (0..grid_sz - 1) * {water_c} ||
     attacked1 := (0..grid_sz - 1) * {FALSE} ||
     attacked2 := (0..grid_sz - 1) * {FALSE} ||
+    to_be_destroyed := {} ||
     ready := FALSE
 
 OPERATIONS
@@ -122,11 +129,12 @@ OPERATIONS
                 ship_health(grid_to_ship1(pp)) := ship_health(grid_to_ship1(pp)) - 1 ||
                 IF ship_health(grid_to_ship1(pp)) - 1 = 0 THEN
                     rr := destroyed || 
-                    update_atk_grid(pp, ship, to) ||
+                    update_atk_grid_for_destroyed_ship((to_be_destroyed[{grid_to_ship1(pp)}] \/ {pp}), to) ||
                     grid_to_ship1(pp) := water_c ||
                     remove_ship_from_1(grid_to_ship1(pp))
                 ELSE
                     rr := hit || 
+                    to_be_destroyed := to_be_destroyed \/ {grid_to_ship1(pp) |-> pp} ||
                     update_atk_grid(pp, ship, to) ||
                     grid_to_ship1(pp) := water_c
                 END
@@ -139,11 +147,12 @@ OPERATIONS
                 ship_health(grid_to_ship2(pp)) := ship_health(grid_to_ship2(pp)) - 1 ||
                 IF ship_health(grid_to_ship2(pp)) - 1 = 0 THEN
                     rr := destroyed || 
-                    update_atk_grid(pp, ship, to) ||
+                    update_atk_grid_for_destroyed_ship((to_be_destroyed[{grid_to_ship2(pp)}] \/ {pp}), to) ||
                     grid_to_ship2(pp) := water_c ||
                     remove_ship_from_2(grid_to_ship2(pp))
                 ELSE
                     rr := hit || 
+                    to_be_destroyed := to_be_destroyed \/ {grid_to_ship2(pp) |-> pp} ||
                     update_atk_grid(pp, ship, to) ||
                     grid_to_ship2(pp) := water_c
                 END
