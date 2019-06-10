@@ -6,7 +6,7 @@ MACHINE
     Ship_size
     
 SEES
-    Ship_ctx
+    Ship_type_ctx
 
 CONSTANTS
     ship_size

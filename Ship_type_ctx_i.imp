@@ -1,0 +1,16 @@
+/* Ship_type_ctx_i
+ * Author: muril
+ * Creation date: 10/06/2019
+ */
+
+IMPLEMENTATION Ship_type_ctx_i
+REFINES Ship_type_ctx
+
+VALUES
+    SHIP_TYPE = 1..4;
+    battleship = 1;
+    cruiser = 2;
+    destroyer = 3;
+    submarine = 4
+
+END

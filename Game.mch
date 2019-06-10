@@ -1,8 +1,13 @@
-MACHINE Ship
+/* Game
+ * Author: muril
+ * Creation date: 10/06/2019
+ */
+MACHINE
+    Game
     
 INCLUDES
     Attack_grid,
-    Player
+    Player_ships
 
 SEES
     Ship_ctx,
@@ -34,13 +39,13 @@ OPERATIONS
     rr <-- check_win_condition(to) =
     PRE to : ATTACK_WHO THEN
         IF to = p1 THEN
-            IF !xx . (xx : ships2 => ship_health(xx) = 0) THEN
+            IF ships2 = {} THEN
                 rr := TRUE
             ELSE
                 rr := FALSE
             END
         ELSE
-            IF !xx . (xx : ships1 => ship_health(xx) = 0) THEN
+            IF ships1 = {} THEN
                 rr := TRUE
             ELSE
                 rr := FALSE
@@ -117,4 +122,5 @@ OPERATIONS
             END
         END
     END
+
 END

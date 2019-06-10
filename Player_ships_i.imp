@@ -1,0 +1,33 @@
+/* Player_ships_i
+ * Author: muril
+ * Creation date: 10/06/2019
+ */
+
+IMPLEMENTATION Player_ships_i
+REFINES Player_ships
+    
+SEES
+    Ship_ctx
+
+CONCRETE_VARIABLES
+    ships1_i,
+    ships2_i
+    
+INVARIANT
+    ships1_i : 0..9 --> SHIPS &
+    ships2_i : 0..9 --> SHIPS &
+    ships1 = ran(ships1_i) &
+    ships2 = ran(ships2_i)
+    
+INITIALISATION
+//    VAR ii IN
+//        ii := 0;
+//        ships1_i := (0..9)*{0};
+//        WHILE ii < 9
+//        DO ii := ii + 1; ships1_i(ii) := ii
+//        INVARIANT ships1_i : 0..9 --> SHIPS & ii : NAT & ii <= 9 & 0 .. ii <| ships1_i = %xx . (xx : 0 .. ii | xx)
+//        VARIANT 9 - ii
+//        END
+//    END
+
+END

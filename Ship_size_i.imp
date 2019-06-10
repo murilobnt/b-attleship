@@ -7,7 +7,7 @@ IMPLEMENTATION Ship_size_i
 REFINES Ship_size
 
 SEES
-    Ship_ctx
+    Ship_type_ctx
 
 VALUES
     ship_size = {(battleship |-> 4),(cruiser |-> 3),(destroyer |-> 2),(submarine |-> 1)}

@@ -4,20 +4,19 @@
  */
 MACHINE
     Ship_ctx
-
+    
+SEES
+    Ship_type_ctx
+    
 SETS
-    SHIP_TYPE
-
+    SHIPS
+    
 CONSTANTS
-    battleship,
-    cruiser,
-    destroyer,
-    submarine
+    ship_type_r,
+    water_c
     
 PROPERTIES
-    battleship : SHIP_TYPE & cruiser : SHIP_TYPE & destroyer : SHIP_TYPE & submarine : SHIP_TYPE &
-    battleship /= cruiser & battleship /= destroyer & battleship /= submarine &
-    cruiser /= destroyer & cruiser /= submarine & destroyer /= submarine &
-    card(SHIP_TYPE) = 4
+    ship_type_r : SHIPS --> SHIP_TYPE &
+    water_c : SHIPS
 
 END
