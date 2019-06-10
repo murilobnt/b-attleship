@@ -12,7 +12,6 @@ CONSTANTS
     water_c
     
 PROPERTIES
-    water_c : INT &
-    water_c /: ships
+    water_c : NAT
 
 END

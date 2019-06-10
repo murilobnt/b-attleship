@@ -5,10 +5,14 @@
 
 IMPLEMENTATION Player_i
 REFINES Player
+    
+SEES
+    Ship_ctx
 
 VALUES
     ships1 = 0..9;
     ships2 = 10..19;
-    ships = 0..19
+    ships = 0..19;
+    ship_type_r = {0 |-> battleship, 1 |-> cruiser, 2 |-> cruiser, 3 |-> destroyer, 4 |-> destroyer, 5 |-> destroyer, 6 |-> submarine, 7 |-> submarine, 8 |-> submarine, 9 |-> submarine, 10 |-> battleship, 11 |-> cruiser, 12 |-> cruiser, 13 |-> destroyer, 14 |-> destroyer, 15 |-> destroyer, 16 |-> submarine, 17 |-> submarine, 18 |-> submarine, 19 |-> submarine}
 
  END

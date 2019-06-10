@@ -24,7 +24,9 @@ INITIALISATION
     
 OPERATIONS
     update_atk_grid(pp, cc, to) =
-    PRE pp : 0..grid_sz - 1 & cc : CELL & to : ATTACK_WHO 
+    PRE pp : 0..grid_sz - 1 & 
+        cc : CELL & 
+        to : ATTACK_WHO 
     THEN
         IF to = p1 THEN
             atk_grid1(pp) := cc
