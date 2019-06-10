@@ -1,15 +1,14 @@
 MACHINE Ship
     
 INCLUDES
-    Attack_grid
+    Attack_grid,
+    Player
 
 SEES
     Ship_ctx,
     Dimensions_ctx,
     Ship_size,
     Grid_cell,
-    Player,
-    Water_ctx,
     Attack_who_ctx
 
 SETS
@@ -22,35 +21,52 @@ VARIABLES
     grid_to_ship2
 
 INVARIANT
-    ship_health : ships --> 0..4 &
-    grid_to_ship1 : 0..grid_sz - 1 --> ships1 \/ {water_c} &
-    grid_to_ship2 : 0..grid_sz - 1 --> ships2 \/ {water_c} 
+    ship_health : SHIPS --> 0..4 &
+    grid_to_ship1 : 0..grid_sz - 1 --> ships1 &
+    grid_to_ship2 : 0..grid_sz - 1 --> ships2 
 
 INITIALISATION
-    ship_health := %xx . (xx : ships | ship_size(ship_type_r(xx))) ||
+    ship_health := %xx . (xx : SHIPS | ship_size(ship_type_r(xx))) ||
     grid_to_ship1 := (0..grid_sz - 1) * {water_c} ||
     grid_to_ship2 := (0..grid_sz - 1) * {water_c}
 
 OPERATIONS
+    rr <-- check_win_condition(to) =
+    PRE to : ATTACK_WHO THEN
+        IF to = p1 THEN
+            IF !xx . (xx : ships2 => ship_health(xx) = 0) THEN
+                rr := TRUE
+            ELSE
+                rr := FALSE
+            END
+        ELSE
+            IF !xx . (xx : ships1 => ship_health(xx) = 0) THEN
+                rr := TRUE
+            ELSE
+                rr := FALSE
+            END
+        END
+    END;
+    
     add_ship(ii, oo, pp) =
-    PRE ii : ships &
+    PRE ii : SHIPS &
         oo : ORIENTATION & 
         pp : 0..grid_sz - 1 &
         (ii : ships1 => 
             (!xx.(xx : 1..ship_size(ship_type_r(ii)) - 1 => 
                 (oo = horizontal & (pp mod grid_dim_x) + xx < grid_dim_x & 
-                    ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship1((pp mod grid_dim_x) + xx) /: ships)) or 
+                    ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship1((pp mod grid_dim_x) + xx) = water_c)) or 
                 (oo = vertical & pp + (xx * grid_dim_y) < grid_sz & 
-                    (pp + (xx * grid_dim_y) < grid_sz => grid_to_ship1(pp + (xx * grid_dim_y)) /: ships))
+                    (pp + (xx * grid_dim_y) < grid_sz => grid_to_ship1(pp + (xx * grid_dim_y)) = water_c))
         ))) &
         (ii : ships2 => 
             (!xx.(xx : 1..ship_size(ship_type_r(ii)) - 1 => 
                 (oo = horizontal & (pp mod grid_dim_x) + xx < grid_dim_x & 
-                    ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship2((pp mod grid_dim_x) + xx) /: ships)) or 
+                    ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship2((pp mod grid_dim_x) + xx) = water_c)) or 
                 (oo = vertical & pp + (xx * grid_dim_y) < grid_sz & 
-                    (pp + (xx * grid_dim_y) < grid_sz => grid_to_ship2(pp + (xx * grid_dim_y)) /: ships))
+                    (pp + (xx * grid_dim_y) < grid_sz => grid_to_ship2(pp + (xx * grid_dim_y)) = water_c))
         )))
-    THEN    
+    THEN
         LET hh, vv BE 
             hh = ran(%xx . (xx : 0..ship_size(ship_type_r(ii)) - 1 | pp + xx)) & 
             vv = ran(%xx . (xx : 0..ship_size(ship_type_r(ii)) - 1 | pp + (xx * grid_dim_y)))
@@ -74,8 +90,8 @@ OPERATIONS
     rr <-- attack(pp, to) =
     PRE pp : 0..grid_sz - 1 &
         to : ATTACK_WHO &
-        (to = p1 => (grid_to_ship1(pp) : ships => ship_health(grid_to_ship1(pp)) > 0)) &
-        (to = p2 => (grid_to_ship2(pp) : ships => ship_health(grid_to_ship2(pp)) > 0))
+        (to = p1 => (grid_to_ship1(pp) /= water_c => ship_health(grid_to_ship1(pp)) > 0)) &
+        (to = p2 => (grid_to_ship2(pp) /= water_c => ship_health(grid_to_ship2(pp)) > 0))
     THEN
         IF to = p1 THEN
             IF grid_to_ship1(pp) /= water_c THEN

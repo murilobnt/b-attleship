@@ -8,18 +8,27 @@ MACHINE
 SEES
     Ship_ctx
     
+SETS
+    SHIPS
+    
 CONSTANTS
-    ships1,
-    ships2,
     ship_type_r,
-    ships
+    water_c
     
 PROPERTIES
-    ships1 <: NAT &
-    ships2 <: NAT &
-    ships <: NAT &
-    ship_type_r : ships --> SHIP_TYPE &
-    ships1 /\ ships2 = {} &
-    ships = ships1 \/ ships2    
+    ship_type_r : SHIPS --> SHIP_TYPE &
+    water_c : SHIPS
+    
+VARIABLES
+    ships1,
+    ships2
+    
+INVARIANT
+    ships1 <: SHIPS &
+    ships2 <: SHIPS &
+    ships1 /\ ships2 = {}
+
+INITIALISATION
+    ships1 := {} || ships2 := {}
 
 END
