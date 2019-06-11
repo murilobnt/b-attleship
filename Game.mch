@@ -70,21 +70,21 @@ OPERATIONS
     END;
     
     add_ship(ii, oo, pp) =
-    PRE ii : 0..20 &
+    PRE ii : 0..19 &
         oo : ORIENTATION &
         ready = FALSE & 
         pp : 0..grid_sz - 1 &
         (ii : ships1 => ii /: ran(grid_to_ship1) & grid_to_ship1(pp) = water_c &
             (!xx.(xx : 1..ship_size(ship_type_r(ii)) - 1 => 
                 (oo = horizontal & (pp mod grid_dim_x) + xx < grid_dim_x & 
-                    ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship1((pp mod grid_dim_x) + xx) = water_c)) or 
+                    ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship1(pp + xx) = water_c)) or 
                 (oo = vertical & pp + (xx * grid_dim_y) < grid_sz & 
                     (pp + (xx * grid_dim_y) < grid_sz => grid_to_ship1(pp + (xx * grid_dim_y)) = water_c))
         ))) &
         (ii : ships2 => ii /: ran(grid_to_ship2) & grid_to_ship2(pp) = water_c &
             (!xx.(xx : 1..ship_size(ship_type_r(ii)) - 1 => 
                 (oo = horizontal & (pp mod grid_dim_x) + xx < grid_dim_x & 
-                    ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship2((pp mod grid_dim_x) + xx) = water_c)) or 
+                    ((pp mod grid_dim_x) + xx < grid_dim_x => grid_to_ship2(pp + xx) = water_c)) or 
                 (oo = vertical & pp + (xx * grid_dim_y) < grid_sz & 
                     (pp + (xx * grid_dim_y) < grid_sz => grid_to_ship2(pp + (xx * grid_dim_y)) = water_c))
         )))
