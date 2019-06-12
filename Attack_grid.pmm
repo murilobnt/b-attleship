@@ -1,3 +1,4 @@
 ﻿THEORY User_Pass IS
-Operation(Initialisation) & ff(0) & pp
+Operation(Initialisation) & ff(0) & pp;
+Operation(update_atk_grid_for_destroyed_ship) & ff(0) & pp
 END 

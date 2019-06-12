@@ -1,0 +1,5 @@
+﻿THEORY User_Pass IS
+Operation(Initialisation) & ff(0) & pp;
+Operation(remove_ship_from_1) & ff(0) & pp;
+Operation(remove_ship_from_2) & ff(0) & pp
+END 

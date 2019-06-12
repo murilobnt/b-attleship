@@ -3,6 +3,8 @@
  * Creation date: 10/06/2019
  */
 
+// PS: CODE CAN BE ALREADY GENERATED FROM THIS.
+
 IMPLEMENTATION Player_ships_i
 REFINES Player_ships
     
@@ -14,20 +16,40 @@ CONCRETE_VARIABLES
     ships2_i
     
 INVARIANT
-    ships1_i : 0..9 --> 0..19 &
-    ships2_i : 0..9 --> 0..19 &
+    ships1_i : 0..10 --> 0..20 &
+    ships2_i : 0..10 --> 0..20 &
     ships1 = ran(ships1_i) &
     ships2 = ran(ships2_i)
     
 INITIALISATION
-//    VAR ii IN
-//        ii := 0;
-//        ships1_i := (0..9)*{0};
-//        WHILE ii < 9
-//        DO ii := ii + 1; ships1_i(ii) := ii
-//        INVARIANT ships1_i : 0..9 --> SHIPS & ii : NAT & ii <= 9 & 0 .. ii <| ships1_i = %xx . (xx : 0 .. ii | xx)
-//        VARIANT 9 - ii
-//        END
-//    END
-
+    VAR ii IN
+        ii := 0;
+        ships1_i := (0..10)*{20};
+        ships2_i := (0..10)*{20};
+        WHILE ii < 10
+        DO 
+            ships1_i(ii) := ii;
+            ships2_i(ii) := ii + 10;
+            ii := ii + 1
+        INVARIANT ii : NAT & ii <= 10 & 
+                  0 .. ii - 1 <| ships1_i = %xx . (xx : 0 .. ii - 1 | xx) &
+                  0 .. ii - 1 <| ships2_i = %xx . (xx : 0.. ii - 1 | xx + 10)
+        VARIANT 10 - ii
+        END
+    END
+    
+OPERATIONS
+    remove_ship_from_1(ss) = 
+    BEGIN
+        IF ss >= 0 & ss <= 9 THEN
+            ships1_i(ss) := 20
+        END
+    END;
+    
+    remove_ship_from_2(ss) = 
+    BEGIN
+        IF ss >= 10 & ss <= 19 THEN
+            ships2_i(ss-10) := 20
+        END
+    END
 END
