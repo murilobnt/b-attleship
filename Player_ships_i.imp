@@ -7,9 +7,6 @@
 
 IMPLEMENTATION Player_ships_i
 REFINES Player_ships
-    
-SEES
-    Ship_ctx
 
 CONCRETE_VARIABLES
     ships1_i,

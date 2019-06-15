@@ -5,9 +5,6 @@
 MACHINE
     Player_ships
     
-SEES
-    Ship_ctx
-    
 VARIABLES
     ships1,
     ships2
