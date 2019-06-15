@@ -12,12 +12,14 @@ CONSTANTS
     battleship,
     cruiser,
     destroyer,
-    submarine
+    submarine,
+    ship_size
     
 PROPERTIES
     battleship : SHIP_TYPE & cruiser : SHIP_TYPE & destroyer : SHIP_TYPE & submarine : SHIP_TYPE &
     battleship /= cruiser & battleship /= destroyer & battleship /= submarine &
     cruiser /= destroyer & cruiser /= submarine & destroyer /= submarine &
-    card(SHIP_TYPE) = 4
+    card(SHIP_TYPE) = 4 &
+    ship_size : SHIP_TYPE --> 1..4
 
 END

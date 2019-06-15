@@ -16,7 +16,7 @@ PROMOTES
 SEES
     Ship_ctx,
     Dimensions_ctx,
-    Ship_size,
+    Ship_type_ctx,
     Grid_cell,
     Attack_who_ctx
 
