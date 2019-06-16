@@ -129,7 +129,11 @@ OPERATIONS
                 ship_health(grid_to_ship1(pp)) := ship_health(grid_to_ship1(pp)) - 1 ||
                 IF ship_health(grid_to_ship1(pp)) - 1 = 0 THEN
                     rr := destroyed || 
-                    update_atk_grid_for_destroyed_ship((to_be_destroyed[{grid_to_ship1(pp)}] \/ {pp}), to) ||
+                    ANY dd WHERE dd : 0..ship_size(ship_type_r(grid_to_ship1(pp))) --> 0 .. grid_sz - 1 & 
+                        ran(dd) = to_be_destroyed[{grid_to_ship1(pp)}] \/ {pp}
+                    THEN
+                        update_atk_grid_for_destroyed_ship(dd, to, ship_size(ship_type_r(grid_to_ship1(pp))))
+                    END ||
                     grid_to_ship1(pp) := water_c ||
                     remove_ship_from_1(grid_to_ship1(pp))
                 ELSE
@@ -147,7 +151,11 @@ OPERATIONS
                 ship_health(grid_to_ship2(pp)) := ship_health(grid_to_ship2(pp)) - 1 ||
                 IF ship_health(grid_to_ship2(pp)) - 1 = 0 THEN
                     rr := destroyed || 
-                    update_atk_grid_for_destroyed_ship((to_be_destroyed[{grid_to_ship2(pp)}] \/ {pp}), to) ||
+                    ANY dd WHERE dd : 0..ship_size(ship_type_r(grid_to_ship2(pp))) --> 0 .. grid_sz - 1 & 
+                        ran(dd) = to_be_destroyed[{grid_to_ship2(pp)}] \/ {pp}
+                    THEN
+                        update_atk_grid_for_destroyed_ship(dd, to, ship_size(ship_type_r(grid_to_ship2(pp))))
+                    END ||
                     grid_to_ship2(pp) := water_c ||
                     remove_ship_from_2(grid_to_ship2(pp))
                 ELSE

@@ -35,14 +35,15 @@ OPERATIONS
         END
     END;
 
-    update_atk_grid_for_destroyed_ship(pp, to) =
-    PRE pp <: 0..grid_sz - 1 &
+    update_atk_grid_for_destroyed_ship(pp, to, sz) =
+    PRE sz : NAT &
+        pp : 0..sz --> 0..grid_sz - 1 &
         to : ATTACK_WHO
     THEN
         IF to = p1 THEN
-            atk_grid1 := atk_grid1 <+ (pp * {destroyed_ship})
+            atk_grid1 := atk_grid1 <+ (ran(pp) * {destroyed_ship})
         ELSE
-            atk_grid2 := atk_grid2 <+ (pp * {destroyed_ship})
+            atk_grid2 := atk_grid2 <+ (ran(pp) * {destroyed_ship})
         END
     END;
     
