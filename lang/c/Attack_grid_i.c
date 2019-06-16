@@ -53,9 +53,9 @@ void Attack_grid__update_atk_grid_for_destroyed_ship(int32_t *pp, Attack_who_ctx
             int32_t nsz;
             
             ii = 0;
-            nsz = sz-1;
+            nsz = sz+1;
             Attack_grid__atk_grid1_i[pp[ii]] = Grid_cell__destroyed_ship;
-            while(((ii) < (nsz)))
+            while(((ii) < (sz)))
             {
                 ii = ii+1;
                 Attack_grid__atk_grid1_i[pp[ii]] = Grid_cell__destroyed_ship;
@@ -69,9 +69,9 @@ void Attack_grid__update_atk_grid_for_destroyed_ship(int32_t *pp, Attack_who_ctx
             int32_t nsz;
             
             ii = 0;
-            nsz = sz-1;
+            nsz = sz+1;
             Attack_grid__atk_grid2_i[pp[ii]] = Grid_cell__destroyed_ship;
-            while(((ii) < (nsz)))
+            while(((ii) < (sz)))
             {
                 ii = ii+1;
                 Attack_grid__atk_grid2_i[pp[ii]] = Grid_cell__destroyed_ship;

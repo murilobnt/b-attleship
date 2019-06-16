@@ -129,10 +129,14 @@ OPERATIONS
                 ship_health(grid_to_ship1(pp)) := ship_health(grid_to_ship1(pp)) - 1 ||
                 IF ship_health(grid_to_ship1(pp)) - 1 = 0 THEN
                     rr := destroyed || 
-                    ANY dd WHERE dd : 0..ship_size(ship_type_r(grid_to_ship1(pp))) --> 0 .. grid_sz_for_arr & 
-                        ran(dd) = to_be_destroyed[{grid_to_ship1(pp)}] \/ {pp}
-                    THEN
-                        update_atk_grid_for_destroyed_ship(dd, to, ship_size(ship_type_r(grid_to_ship1(pp))))
+                    LET ss_boundary BE ss_boundary = ship_size(ship_type_r(grid_to_ship1(pp))) - 1 IN
+                        ANY dd WHERE dd : 0..ss_boundary --> 0 .. grid_sz_for_arr & 
+                            ran(dd) = to_be_destroyed[{grid_to_ship1(pp)}] \/ {pp}
+                        THEN
+                            LET sz BE sz = ship_size(ship_type_r(grid_to_ship1(pp))) - 1 IN
+                                update_atk_grid_for_destroyed_ship(dd, to, sz)
+                            END
+                        END
                     END ||
                     grid_to_ship1(pp) := water_c ||
                     remove_ship_from_1(grid_to_ship1(pp))
@@ -151,11 +155,15 @@ OPERATIONS
                 ship_health(grid_to_ship2(pp)) := ship_health(grid_to_ship2(pp)) - 1 ||
                 IF ship_health(grid_to_ship2(pp)) - 1 = 0 THEN
                     rr := destroyed || 
-                    ANY dd WHERE dd : 0..ship_size(ship_type_r(grid_to_ship2(pp))) --> 0 .. grid_sz_for_arr & 
-                        ran(dd) = to_be_destroyed[{grid_to_ship2(pp)}] \/ {pp}
-                    THEN
-                        update_atk_grid_for_destroyed_ship(dd, to, ship_size(ship_type_r(grid_to_ship2(pp))))
-                    END ||
+                    LET ss_boundary BE ss_boundary = ship_size(ship_type_r(grid_to_ship2(pp))) - 1 IN
+                        ANY dd WHERE dd : 0..ss_boundary --> 0 .. grid_sz_for_arr & 
+                            ran(dd) = to_be_destroyed[{grid_to_ship2(pp)}] \/ {pp}
+                        THEN
+                            LET sz BE sz = ship_size(ship_type_r(grid_to_ship2(pp))) - 1 IN
+                                update_atk_grid_for_destroyed_ship(dd, to, sz)
+                            END
+                        END
+                    END||
                     grid_to_ship2(pp) := water_c ||
                     remove_ship_from_2(grid_to_ship2(pp))
                 ELSE

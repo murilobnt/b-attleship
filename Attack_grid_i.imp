@@ -40,26 +40,26 @@ OPERATIONS
         IF to = p1 THEN
             VAR ii, nsz IN
                 ii := 0;
-                nsz := sz - 1;
+                nsz := sz + 1;
                 atk_grid1_i(pp(ii)) := destroyed_ship;
-                WHILE (ii < nsz)
+                WHILE (ii < sz)
                 DO
                     ii := ii + 1;
                     atk_grid1_i(pp(ii)) := destroyed_ship
-                INVARIANT ii : NAT & ii <= nsz & ran(pp(0).. pp(ii) <| atk_grid1_i) = {destroyed_ship}
+                INVARIANT ii : NAT & ii <= nsz & ran(ran(0 .. ii <| pp) <| atk_grid1_i) = {destroyed_ship}
                 VARIANT nsz - ii
                 END
             END
         ELSE
             VAR ii, nsz IN
                 ii := 0;
-                nsz := sz - 1;
+                nsz := sz + 1;
                 atk_grid2_i(pp(ii)) := destroyed_ship;
-                WHILE (ii < nsz)
+                WHILE (ii < sz)
                 DO
                     ii := ii + 1;
                     atk_grid2_i(pp(ii)) := destroyed_ship
-                INVARIANT ii : NAT & ii <= nsz & ran(pp(0).. pp(ii) <| atk_grid2_i) = {destroyed_ship}
+                INVARIANT ii : NAT & ii <= nsz & ran(ran(0 .. ii <| pp) <| atk_grid2_i) = {destroyed_ship}
                 VARIANT nsz - ii
                 END
             END
