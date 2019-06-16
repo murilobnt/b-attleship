@@ -15,16 +15,16 @@ VARIABLES
     atk_grid2
     
 INVARIANT
-    atk_grid1 : 0..grid_sz - 1 --> CELL &
-    atk_grid2 : 0..grid_sz - 1 --> CELL
+    atk_grid1 : 0..grid_sz_for_arr --> CELL &
+    atk_grid2 : 0..grid_sz_for_arr --> CELL
 
 INITIALISATION
-    atk_grid1 := (0..grid_sz - 1) * {undiscovered} || 
-    atk_grid2 := (0..grid_sz - 1) * {undiscovered}
+    atk_grid1 := (0..grid_sz_for_arr) * {undiscovered} || 
+    atk_grid2 := (0..grid_sz_for_arr) * {undiscovered}
     
 OPERATIONS
     update_atk_grid(pp, cc, to) =
-    PRE pp : 0..grid_sz - 1 & 
+    PRE pp : 0..grid_sz_for_arr & 
         cc : CELL & 
         to : ATTACK_WHO 
     THEN
@@ -37,7 +37,7 @@ OPERATIONS
 
     update_atk_grid_for_destroyed_ship(pp, to, sz) =
     PRE sz : NAT &
-        pp : 0..sz --> 0..grid_sz - 1 &
+        pp : 0..sz --> 0..grid_sz_for_arr &
         to : ATTACK_WHO
     THEN
         IF to = p1 THEN

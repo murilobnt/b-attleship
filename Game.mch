@@ -35,19 +35,19 @@ VARIABLES
 
 INVARIANT
     ship_health : 0..20 --> 0..4 &
-    grid_to_ship1 : 0..grid_sz - 1 --> ships1 &
-    grid_to_ship2 : 0..grid_sz - 1 --> ships2 &
-    attacked1 : 0..grid_sz - 1 --> BOOL &
-    attacked2 : 0..grid_sz - 1 --> BOOL &
-    to_be_destroyed : 0..20 <-> 0..grid_sz - 1 &
+    grid_to_ship1 : 0..grid_sz_for_arr --> ships1 &
+    grid_to_ship2 : 0..grid_sz_for_arr --> ships2 &
+    attacked1 : 0..grid_sz_for_arr --> BOOL &
+    attacked2 : 0..grid_sz_for_arr --> BOOL &
+    to_be_destroyed : 0..20 <-> 0..grid_sz_for_arr &
     ready : BOOL
 
 INITIALISATION
     ship_health := %xx . (xx : 0..20 | ship_size(ship_type_r(xx))) ||
-    grid_to_ship1 := (0..grid_sz - 1) * {water_c} ||
-    grid_to_ship2 := (0..grid_sz - 1) * {water_c} ||
-    attacked1 := (0..grid_sz - 1) * {FALSE} ||
-    attacked2 := (0..grid_sz - 1) * {FALSE} ||
+    grid_to_ship1 := (0..grid_sz_for_arr) * {water_c} ||
+    grid_to_ship2 := (0..grid_sz_for_arr) * {water_c} ||
+    attacked1 := (0..grid_sz_for_arr) * {FALSE} ||
+    attacked2 := (0..grid_sz_for_arr) * {FALSE} ||
     to_be_destroyed := {} ||
     ready := FALSE
 
@@ -73,7 +73,7 @@ OPERATIONS
     PRE ii : 0..19 &
         oo : ORIENTATION &
         ready = FALSE & 
-        pp : 0..grid_sz - 1 &
+        pp : 0..grid_sz_for_arr &
         (ii : ships1 => ii /: ran(grid_to_ship1) & grid_to_ship1(pp) = water_c &
             (!xx.(xx : 1..ship_size(ship_type_r(ii)) - 1 => 
                 (oo = horizontal & (pp mod grid_dim_x) + xx < grid_dim_x & 
@@ -117,7 +117,7 @@ OPERATIONS
     END;
     
     rr <-- attack(pp, to) =
-    PRE pp : 0..grid_sz - 1 & ready = TRUE &
+    PRE pp : 0..grid_sz_for_arr & ready = TRUE &
         to : ATTACK_WHO &
         (to = p1 => attacked1(pp) = FALSE & 
                     (grid_to_ship1(pp) /= water_c => ship_health(grid_to_ship1(pp)) > 0)) &
@@ -129,7 +129,7 @@ OPERATIONS
                 ship_health(grid_to_ship1(pp)) := ship_health(grid_to_ship1(pp)) - 1 ||
                 IF ship_health(grid_to_ship1(pp)) - 1 = 0 THEN
                     rr := destroyed || 
-                    ANY dd WHERE dd : 0..ship_size(ship_type_r(grid_to_ship1(pp))) --> 0 .. grid_sz - 1 & 
+                    ANY dd WHERE dd : 0..ship_size(ship_type_r(grid_to_ship1(pp))) --> 0 .. grid_sz_for_arr & 
                         ran(dd) = to_be_destroyed[{grid_to_ship1(pp)}] \/ {pp}
                     THEN
                         update_atk_grid_for_destroyed_ship(dd, to, ship_size(ship_type_r(grid_to_ship1(pp))))
@@ -151,7 +151,7 @@ OPERATIONS
                 ship_health(grid_to_ship2(pp)) := ship_health(grid_to_ship2(pp)) - 1 ||
                 IF ship_health(grid_to_ship2(pp)) - 1 = 0 THEN
                     rr := destroyed || 
-                    ANY dd WHERE dd : 0..ship_size(ship_type_r(grid_to_ship2(pp))) --> 0 .. grid_sz - 1 & 
+                    ANY dd WHERE dd : 0..ship_size(ship_type_r(grid_to_ship2(pp))) --> 0 .. grid_sz_for_arr & 
                         ran(dd) = to_be_destroyed[{grid_to_ship2(pp)}] \/ {pp}
                     THEN
                         update_atk_grid_for_destroyed_ship(dd, to, ship_size(ship_type_r(grid_to_ship2(pp))))

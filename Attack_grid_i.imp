@@ -1,0 +1,73 @@
+/* Attack_grid_i
+ * Author: muril
+ * Creation date: 16/06/2019
+ */
+
+IMPLEMENTATION Attack_grid_i
+REFINES Attack_grid
+    
+SEES 
+    Grid_cell,
+    Dimensions_ctx,
+    Attack_who_ctx
+
+CONCRETE_VARIABLES
+    atk_grid1_i,
+    atk_grid2_i
+    
+INVARIANT
+    atk_grid1_i : 0..grid_sz_for_arr --> CELL &
+    atk_grid2_i : 0..grid_sz_for_arr --> CELL &
+    atk_grid1_i = atk_grid1 &
+    atk_grid2_i = atk_grid2
+    
+INITIALISATION
+    atk_grid1_i := (0..grid_sz_for_arr) * {undiscovered}; 
+    atk_grid2_i := (0..grid_sz_for_arr) * {undiscovered}
+    
+OPERATIONS
+    update_atk_grid(pp, cc, to) =
+    BEGIN
+        IF to = p1 THEN
+            atk_grid1_i(pp) := cc
+        ELSE
+            atk_grid2_i(pp) := cc
+        END
+    END;
+    
+    update_atk_grid_for_destroyed_ship(pp, to, sz) =
+    BEGIN
+        IF to = p1 THEN
+            VAR ii, nsz IN
+                ii := 0;
+                nsz := sz - 1;
+                atk_grid1_i(pp(ii)) := destroyed_ship;
+                WHILE (ii < nsz)
+                DO
+                    ii := ii + 1;
+                    atk_grid1_i(pp(ii)) := destroyed_ship
+                INVARIANT ii : NAT & ii <= nsz & ran(pp(0).. pp(ii) <| atk_grid1_i) = {destroyed_ship}
+                VARIANT nsz - ii
+                END
+            END
+        ELSE
+            VAR ii, nsz IN
+                ii := 0;
+                nsz := sz - 1;
+                atk_grid2_i(pp(ii)) := destroyed_ship;
+                WHILE (ii < nsz)
+                DO
+                    ii := ii + 1;
+                    atk_grid2_i(pp(ii)) := destroyed_ship
+                INVARIANT ii : NAT & ii <= nsz & ran(pp(0).. pp(ii) <| atk_grid2_i) = {destroyed_ship}
+                VARIANT nsz - ii
+                END
+            END
+        END
+    END;
+    
+    ag <-- get_attack_grid1 = ag := atk_grid1_i;
+    
+    ag <-- get_attack_grid2 = ag := atk_grid2_i
+
+END

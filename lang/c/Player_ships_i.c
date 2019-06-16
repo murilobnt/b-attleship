@@ -2,9 +2,6 @@
 
 #include "Player_ships.h"
 
-/* Clause SEES */
-#include "Ship_ctx.h"
-
 /* Clause CONCRETE_CONSTANTS */
 /* Basic constants */
 

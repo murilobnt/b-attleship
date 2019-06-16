@@ -1,5 +1,5 @@
-#ifndef _Player_ships_h
-#define _Player_ships_h
+#ifndef _Attack_who_ctx_h
+#define _Attack_who_ctx_h
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -9,6 +9,13 @@ extern "C" {
 
 
 /* Clause SETS */
+typedef enum
+{
+    Attack_who_ctx__p1,
+    Attack_who_ctx__p2
+    
+} Attack_who_ctx__ATTACK_WHO;
+#define Attack_who_ctx__ATTACK_WHO__max 2
 
 /* Clause CONCRETE_VARIABLES */
 
@@ -16,16 +23,12 @@ extern "C" {
 /* Clause CONCRETE_CONSTANTS */
 /* Basic constants */
 /* Array and record constants */
-extern void Player_ships__INITIALISATION(void);
+extern void Attack_who_ctx__INITIALISATION(void);
 
-/* Clause OPERATIONS */
-
-extern void Player_ships__remove_ship_from_1(int32_t ss);
-extern void Player_ships__remove_ship_from_2(int32_t ss);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
 
-#endif /* _Player_ships_h */
+#endif /* _Attack_who_ctx_h */

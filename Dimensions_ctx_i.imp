@@ -9,6 +9,7 @@ REFINES Dimensions_ctx
 VALUES
     grid_dim_x = 10;
     grid_dim_y = 10;
-    grid_sz = 100
+    grid_sz = 100;
+    grid_sz_for_arr = 99
 
  END
