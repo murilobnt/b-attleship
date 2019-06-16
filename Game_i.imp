@@ -36,13 +36,14 @@ INVARIANT
     grid_to_ship2_i : 0..grid_sz_for_arr --> 10..19 &
     attacked1_i : 0..grid_sz_for_arr --> BOOL &
     attacked2_i : 0..grid_sz_for_arr --> BOOL &
-    to_be_destroyed_i : 0..20 <-> 0..grid_sz_for_arr &
+    to_be_destroyed_i : 0..80 --> 0..grid_sz_for_arr &
     ready_i : BOOL &
     ship_health_i = ship_health &
     grid_to_ship1_i = grid_to_ship1 &
     grid_to_ship2_i = grid_to_ship2 &
     attacked1_i = attacked1 &
     attacked2_i = attacked2 &
+    !xx . (xx : dom(to_be_destroyed) => !yy . (yy : to_be_destroyed[{xx}] => yy : ran(to_be_destroyed_i))) &
     ready_i = ready
     
 INITIALISATION
@@ -63,7 +64,7 @@ INITIALISATION
     grid_to_ship2_i := (0..grid_sz_for_arr) * {water_c};
     attacked1_i := (0..grid_sz_for_arr) * {FALSE};
     attacked2_i := (0..grid_sz_for_arr) * {FALSE};
-    to_be_destroyed_i := {};
+    to_be_destroyed_i := (0..80) * {0};
     ready_i := FALSE
     
 OPERATIONS
@@ -202,7 +203,7 @@ OPERATIONS
                             remove_ship_from_1(grid_to_ship1_i(pp))
                         ELSE
                             rr := hit;
-                            //to_be_destroyed_i := to_be_destroyed_i \/ {grid_to_ship1_i(pp) |-> pp};
+                            to_be_destroyed_i((grid_to_ship1_i(pp) * 4) + (ship_size(ship_type_r(grid_to_ship1_i(pp))) - sh)) := pp;
                             update_atk_grid(pp, ship, to);
                             grid_to_ship1_i(pp) := water_c
                         END
@@ -235,7 +236,7 @@ OPERATIONS
                             remove_ship_from_2(grid_to_ship2_i(pp))
                         ELSE
                             rr := hit;
-                        //to_be_destroyed_i := to_be_destroyed_i \/ {grid_to_ship2_i(pp) |-> pp};
+                            to_be_destroyed_i((grid_to_ship2_i(pp) * 4) + (ship_size(ship_type_r(grid_to_ship2_i(pp))) - sh)) := pp;
                             update_atk_grid(pp, ship, to);
                             grid_to_ship2_i(pp) := water_c
                         END
