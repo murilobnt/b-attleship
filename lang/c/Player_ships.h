@@ -22,6 +22,10 @@ extern void Player_ships__INITIALISATION(void);
 
 extern void Player_ships__remove_ship_from_1(int32_t ss);
 extern void Player_ships__remove_ship_from_2(int32_t ss);
+extern void Player_ships__is_empty_1(bool *rr);
+extern void Player_ships__is_empty_2(bool *rr);
+extern void Player_ships__belongs_to_1(int32_t pp, bool *rr);
+extern void Player_ships__belongs_to_2(int32_t pp, bool *rr);
 
 #ifdef __cplusplus
 }

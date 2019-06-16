@@ -34,6 +34,30 @@ OPERATIONS
     remove_ship_from_2(ss) =
     PRE ss : 10..19 THEN
         ships2 := ships2 - {ss}
+    END;
+    
+    rr <-- is_empty_1 =
+    IF ships1 = {20} THEN
+        rr := TRUE
+    ELSE
+        rr := FALSE
+    END;
+    
+    rr <-- is_empty_2 =
+    IF ships2 = {20} THEN
+        rr := TRUE
+    ELSE
+        rr := FALSE
+    END;
+    
+    rr <-- belongs_to_1(pp) =
+    PRE pp : 0..20 THEN
+        rr := bool(pp : ships1)
+    END;
+    
+    rr <-- belongs_to_2(pp) =
+    PRE pp : 0..20 THEN
+        rr := bool(pp : ships2)
     END
 
 END

@@ -35,8 +35,8 @@ VARIABLES
 
 INVARIANT
     ship_health : 0..20 --> 0..4 &
-    grid_to_ship1 : 0..grid_sz_for_arr --> ships1 &
-    grid_to_ship2 : 0..grid_sz_for_arr --> ships2 &
+    grid_to_ship1 : 0..grid_sz_for_arr --> 0..9 &
+    grid_to_ship2 : 0..grid_sz_for_arr --> 10..19 &
     attacked1 : 0..grid_sz_for_arr --> BOOL &
     attacked2 : 0..grid_sz_for_arr --> BOOL &
     to_be_destroyed : 0..20 <-> 0..grid_sz_for_arr &

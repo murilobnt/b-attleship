@@ -56,3 +56,93 @@ void Player_ships__remove_ship_from_2(int32_t ss)
     }
 }
 
+void Player_ships__is_empty_1(bool *rr)
+{
+    int32_t ii;
+    
+    ii = 0;
+    (*rr) = true;
+    while((ii) < (11))
+    {
+        {
+            int32_t val;
+            
+            val = Player_ships__ships1_i[ii];
+            if(((ii) < (10)) &&
+            ((val) != (20)))
+            {
+                (*rr) = false;
+            }
+        }
+        ii = ii+1;
+    }
+}
+
+void Player_ships__is_empty_2(bool *rr)
+{
+    int32_t ii;
+    
+    ii = 0;
+    (*rr) = true;
+    while((ii) < (11))
+    {
+        {
+            int32_t val;
+            
+            val = Player_ships__ships2_i[ii];
+            if(((ii) < (10)) &&
+            ((val) != (20)))
+            {
+                (*rr) = false;
+            }
+        }
+        ii = ii+1;
+    }
+}
+
+void Player_ships__belongs_to_1(int32_t pp, bool *rr)
+{
+    int32_t ii;
+    
+    ii = 0;
+    (*rr) = false;
+    while(((ii) < (11)) &&
+    ((*rr) == false))
+    {
+        {
+            int32_t val;
+            
+            val = Player_ships__ships1_i[ii];
+            if(((ii) < (10)) &&
+            (val == pp))
+            {
+                (*rr) = true;
+            }
+        }
+        ii = ii+1;
+    }
+}
+
+void Player_ships__belongs_to_2(int32_t pp, bool *rr)
+{
+    int32_t ii;
+    
+    ii = 0;
+    (*rr) = false;
+    while(((ii) < (11)) &&
+    ((*rr) == false))
+    {
+        {
+            int32_t val;
+            
+            val = Player_ships__ships2_i[ii];
+            if(((ii) < (10)) &&
+            (val == pp))
+            {
+                (*rr) = true;
+            }
+        }
+        ii = ii+1;
+    }
+}
+

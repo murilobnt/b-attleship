@@ -48,5 +48,81 @@ OPERATIONS
         IF ss >= 10 & ss <= 19 THEN
             ships2_i(ss-10) := 20
         END
+    END;
+    
+    rr <-- is_empty_1 =
+    VAR ii IN
+        ii := 0;
+        rr := TRUE;
+        WHILE ii < 11
+        DO
+            VAR val IN
+                val := ships1_i(ii);
+                IF ii < 10 & val /= 20
+                THEN
+                    rr := FALSE
+                END
+            END;
+            ii := ii + 1
+        INVARIANT ii : NAT & ii <= 11 & (rr = TRUE <=> !xx.(xx : 0 .. ii - 1 => ships1_i(xx) = 20))
+        VARIANT 11 - ii
+        END
+    END;
+    
+    rr <-- is_empty_2 =
+    VAR ii IN
+        ii := 0;
+        rr := TRUE;
+        WHILE ii < 11
+        DO
+            VAR val IN
+                val := ships2_i(ii);
+                IF ii < 10 & val /= 20
+                THEN
+                    rr := FALSE
+                END
+            END;
+            ii := ii + 1
+        INVARIANT ii : NAT & ii <= 11 & (rr = TRUE <=> !xx.(xx : 0 .. ii - 1 => ships2_i(xx) = 20))
+        VARIANT 11 - ii
+        END
+    END;
+    
+    rr <-- belongs_to_1(pp) =
+    VAR ii IN
+        ii := 0;
+        rr := FALSE;
+        WHILE ii < 11 & rr = FALSE
+        DO
+            VAR val IN
+                val := ships1_i(ii);
+                IF ii < 10 & val = pp
+                THEN
+                    rr := TRUE
+                END
+            END;
+            ii := ii + 1
+        INVARIANT ii : NAT & ii <= 11 & (rr = TRUE <=> #xx.(xx : 0 .. ii - 1 & ships1_i(xx) = pp))
+        VARIANT 11 - ii
+        END
+    END;
+    
+    rr <-- belongs_to_2(pp) =
+    VAR ii IN
+        ii := 0;
+        rr := FALSE;
+        WHILE ii < 11 & rr = FALSE
+        DO
+            VAR val IN
+                val := ships2_i(ii);
+                IF ii < 10 & val = pp
+                THEN
+                    rr := TRUE
+                END
+            END;
+            ii := ii + 1
+        INVARIANT ii : NAT & ii <= 11 & (rr = TRUE <=> #xx.(xx : 0 .. ii - 1 & ships2_i(xx) = pp))
+        VARIANT 11 - ii
+        END
     END
 END
