@@ -364,84 +364,109 @@ OPERATIONS
     
     rr <-- attack(pp, to) = 
     BEGIN
-        IF to = p1 THEN
-            VAR gs IN
+        VAR att, gs IN
+            IF to = p1 
+            THEN
+                att := attacked1_i(pp);
                 gs := grid_to_ship1_i(pp);
-                IF gs /= water_c THEN
-                    ship_health_i(gs) := ship_health_i(gs) - 1;
-                    VAR sh IN
-                        sh := ship_health_i(gs);
-                        IF sh = 0 THEN
-                            rr := destroyed;
-                            VAR ii, ss, hh IN
-                                ii := 0;
-                                ss := ship_size(ship_type_r(gs));
-                                hh := ss - 1;
-                                WHILE ii < hh
-                                DO 
-                                    ii := ii + 1;
-                                    aux_array(ii - 1) := to_be_destroyed_i((gs * 4) + ii - 1);
-                                    update_atk_grid(aux_array(ii), destroyed_ship, to)
-                                INVARIANT ii : NAT & 
-                                    ii <= ss &
-                                    0..ii - 1 <| aux_array = (gs * 4) .. ((gs * 4) + ii - 1) <| to_be_destroyed_i
-                                VARIANT ss - ii
-                                END 
-                            END;
-                            remove_ship_from_1(gs);
-                            grid_to_ship1_i(pp) := water_c
-                        ELSE
-                            rr := hit;
-                            to_be_destroyed_i((gs * 4) + (ship_size(ship_type_r(gs)) - sh)) := pp;
-                            update_atk_grid(pp, ship, to);
-                            grid_to_ship1_i(pp) := water_c
-                        END
-                    END
-                ELSE
-                    rr := miss;
-                    update_atk_grid(pp, water, to)
-                END
-            END;
-            attacked1_i(pp) := TRUE
-        ELSE
-            VAR gs IN
-                gs := grid_to_ship2_i(pp);
-                IF gs /= water_c THEN
-                    ship_health_i(gs) := ship_health_i(gs) - 1;
-                    VAR sh IN
-                        sh := ship_health_i(gs);
-                        IF sh = 0 THEN
-                            rr := destroyed;
-                            VAR ii, ss, hh IN
-                                ii := 0;
-                                ss := ship_size(ship_type_r(gs));
-                                hh := ss - 1;
-                                WHILE ii < hh
-                                DO 
-                                    ii := ii + 1;
-                                    aux_array(ii - 1) := to_be_destroyed_i((gs * 4) + ii - 1);
-                                    update_atk_grid(aux_array(ii), destroyed_ship, to)
-                                INVARIANT ii : NAT & 
-                                    ii <= ss &
-                                    0..ii - 1 <| aux_array = (gs * 4) .. ((gs * 4) + ii - 1) <| to_be_destroyed_i
-                                VARIANT ss - ii
+                IF att = FALSE
+                THEN
+                    IF gs /= water_c 
+                    THEN
+                        VAR sh IN
+                            sh := ship_health_i(gs);
+                            IF sh > 0
+                            THEN    
+                                ship_health_i(gs) := ship_health_i(gs) - 1;
+                                sh := ship_health_i(gs);
+                                IF sh = 0 THEN
+                                    rr := destroyed;
+                                    VAR ii, ss, hh IN
+                                        ii := 0;
+                                        ss := ship_size(ship_type_r(gs));
+                                        hh := ss - 1;
+                                        WHILE ii < hh
+                                        DO 
+                                            ii := ii + 1;
+                                            aux_array(ii - 1) := to_be_destroyed_i((gs * 4) + ii - 1);
+                                            update_atk_grid(aux_array(ii), destroyed_ship, to)
+                                        INVARIANT ii : NAT & 
+                                            ii <= ss &
+                                            0..ii - 1 <| aux_array = (gs * 4) .. ((gs * 4) + ii - 1) <| to_be_destroyed_i
+                                        VARIANT ss - ii
+                                        END 
+                                    END;
+                                    remove_ship_from_1(gs);
+                                    grid_to_ship1_i(pp) := water_c
+                                ELSE
+                                    rr := hit;
+                                    to_be_destroyed_i((gs * 4) + (ship_size(ship_type_r(gs)) - sh)) := pp;
+                                    update_atk_grid(pp, ship, to);
+                                    grid_to_ship1_i(pp) := water_c
                                 END
-                            END;
-                            remove_ship_from_2(gs);
-                            grid_to_ship2_i(pp) := water_c
-                        ELSE
-                            rr := hit;
-                            to_be_destroyed_i((gs * 4) + (ship_size(ship_type_r(gs)) - sh)) := pp;
-                            update_atk_grid(pp, ship, to);
-                            grid_to_ship2_i(pp) := water_c
+                            ELSE
+                                rr := miss
+                            END
                         END
-                    END
+                    ELSE
+                        rr := miss;
+                        update_atk_grid(pp, water, to)
+                    END;
+                    attacked1_i(pp) := TRUE
                 ELSE
-                    rr := miss;
-                    update_atk_grid(pp, water, to)
+                    rr := miss
                 END
-            END;
-            attacked2_i(pp) := TRUE
+            ELSE
+                att := attacked2_i(pp);
+                gs := grid_to_ship2_i(pp);
+                IF att = FALSE
+                THEN
+                    IF gs /= water_c 
+                    THEN
+                        VAR sh IN
+                            sh := ship_health_i(gs);
+                            IF sh > 0
+                            THEN    
+                                ship_health_i(gs) := ship_health_i(gs) - 1;
+                                sh := ship_health_i(gs);
+                                IF sh = 0 THEN
+                                    rr := destroyed;
+                                    VAR ii, ss, hh IN
+                                        ii := 0;
+                                        ss := ship_size(ship_type_r(gs));
+                                        hh := ss - 1;
+                                        WHILE ii < hh
+                                        DO 
+                                            ii := ii + 1;
+                                            aux_array(ii - 1) := to_be_destroyed_i((gs * 4) + ii - 1);
+                                            update_atk_grid(aux_array(ii), destroyed_ship, to)
+                                        INVARIANT ii : NAT & 
+                                            ii <= ss &
+                                            0..ii - 1 <| aux_array = (gs * 4) .. ((gs * 4) + ii - 1) <| to_be_destroyed_i
+                                        VARIANT ss - ii
+                                        END 
+                                    END;
+                                    remove_ship_from_2(gs);
+                                    grid_to_ship2_i(pp) := water_c
+                                ELSE
+                                    rr := hit;
+                                    to_be_destroyed_i((gs * 4) + (ship_size(ship_type_r(gs)) - sh)) := pp;
+                                    update_atk_grid(pp, ship, to);
+                                    grid_to_ship2_i(pp) := water_c
+                                END
+                            ELSE
+                                rr := miss
+                            END
+                        END
+                    ELSE
+                        rr := miss;
+                        update_atk_grid(pp, water, to)
+                    END;
+                    attacked2_i(pp) := TRUE
+                ELSE
+                    rr := miss
+                END
+            END
         END
     END
 
