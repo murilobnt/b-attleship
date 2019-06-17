@@ -386,8 +386,6 @@ OPERATIONS
     
     rr, ll <-- attack(pp, to) = 
     BEGIN
-        IF ready_i = TRUE
-        THEN
             VAR att, gs IN
                 IF to = p1 
                 THEN
@@ -461,6 +459,7 @@ OPERATIONS
                                     sh := ship_health_i(gs);
                                     IF sh = 0 THEN
                                         rr := destroyed;
+                                        update_atk_grid(pp, destroyed_ship, to);
                                         VAR ii, ss, hh IN
                                             ii := 0;
                                             ss := ship_size(ship_type_r(gs));
@@ -468,10 +467,10 @@ OPERATIONS
                                             WHILE ii < hh
                                             DO 
                                                 ii := ii + 1;
-                                                aux_array(ii - 1) := to_be_destroyed_i((gs * 4) + ii - 1);
+                                                aux_array(ii) := to_be_destroyed_i((gs * 4) + ii);
                                                 update_atk_grid(aux_array(ii), destroyed_ship, to)
                                             INVARIANT ii : NAT & 
-                                                ii <= ss &
+                                                ii <= ss + 1 &
                                                 0..ii - 1 <| aux_array = (gs * 4) .. ((gs * 4) + ii - 1) <| to_be_destroyed_i
                                             VARIANT ss - ii
                                             END 
@@ -503,10 +502,6 @@ OPERATIONS
                     END
                 END
             END
-        ELSE
-            rr := miss;
-            ll := error
-        END
     END;
     
     rr <-- get_grid_to_ship1 = rr := grid_to_ship1_i;
