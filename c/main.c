@@ -7,7 +7,7 @@ void print_attack_grid(Attack_who_ctx__ATTACK_WHO player){
   Grid_cell__CELL ag[Dimensions_ctx__grid_sz_for_arr+1];
   player == Attack_who_ctx__p1 ? Attack_grid__get_attack_grid2(ag) :
                                  Attack_grid__get_attack_grid1(ag);
-   printf("x | 1234567890 |\nx | ---------- |\n");
+   printf("x | 1234567890 |\nx | ~~~~~~~~~~ |\n");
    for(int i = 0; i < Dimensions_ctx__grid_dim_y; ++i){
      printf("%d | ", ((i + 1) % 10));
      for(int j = 0; j < Dimensions_ctx__grid_dim_x; ++j){
@@ -22,13 +22,14 @@ void print_attack_grid(Attack_who_ctx__ATTACK_WHO player){
      }
      printf(" |\n");
    }
+   printf("x | ~~~~~~~~~~ |\n");
 }
 
 void print_grid_to_ship(Attack_who_ctx__ATTACK_WHO player){
   int32_t gts[Dimensions_ctx__grid_sz_for_arr+1];
   player == Attack_who_ctx__p1 ? Game__get_grid_to_ship1(gts) :
                                  Game__get_grid_to_ship2(gts);
-   printf("x | 1234567890 |\nx | ---------- |\n");
+   printf("x | 1234567890 |\nx | ~~~~~~~~~~ |\n");
    for(int i = 0; i < Dimensions_ctx__grid_dim_y; ++i){
      printf("%d | ",  ((i + 1) % 10));
      for(int j = 0; j < Dimensions_ctx__grid_dim_x; ++j){
@@ -47,6 +48,7 @@ void print_grid_to_ship(Attack_who_ctx__ATTACK_WHO player){
      }
      printf(" |\n");
    }
+   printf("x | ~~~~~~~~~~ |\n");
 }
 
 bool game_turn(Attack_who_ctx__ATTACK_WHO player) {
@@ -56,6 +58,10 @@ bool game_turn(Attack_who_ctx__ATTACK_WHO player) {
   int32_t pos1, pos2, pos;
   scanf("%i %i", &pos1, &pos2);
   pos = (pos2 - 1) + ((pos1 - 1) * 10);
+  if (pos < 0 || pos > 99){
+    printf("Posição inválida.\n");
+    return 0;
+  }
   Game__ATTACK_REPORT result;
   Game__OP_STATUS status;
   Game__attack(pos, (player == Attack_who_ctx__p1 ? Attack_who_ctx__p2 : Attack_who_ctx__p1), &result, &status);
