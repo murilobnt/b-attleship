@@ -105,18 +105,18 @@ OPERATIONS
         VAR ii, vv IN
             ii := 0;
             vv := TRUE;
-            WHILE ii < 21 & vv = TRUE
+            WHILE ii < 20 & vv = TRUE
             DO
                 VAR val IN
                     val := in_grid(ii);
-                    IF ii < 21 & val = FALSE
+                    IF ii < 20 & val = FALSE
                     THEN
                         vv := FALSE
                     END
                 END;
                 ii := ii + 1
-            INVARIANT ii : NAT & ii <= 11 & (vv = TRUE <=> !xx.(xx : 0 .. ii - 1 => in_grid(xx) = TRUE))
-            VARIANT 11 - ii
+            INVARIANT ii : NAT & ii <= 20 & (vv = TRUE <=> !xx.(xx : 0 .. ii - 1 => in_grid(xx) = TRUE))
+            VARIANT 20 - ii
             END;
             ready_i := vv;
             IF ready_i = TRUE THEN

@@ -127,14 +127,14 @@ void Game__unlock_attack(Game__OP_STATUS *rr)
         
         ii = 0;
         vv = true;
-        while(((ii) < (21)) &&
+        while(((ii) < (20)) &&
         (vv == true))
         {
             {
                 bool val;
                 
                 val = Game__in_grid[ii];
-                if(((ii) < (21)) &&
+                if(((ii) < (20)) &&
                 (val == false))
                 {
                     vv = false;
