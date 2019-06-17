@@ -427,6 +427,7 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                                 if(sh == 0)
                                 {
                                     (*rr) = Game__destroyed;
+                                    Attack_grid__update_atk_grid(pp, Grid_cell__destroyed_ship, to);
                                     {
                                         int32_t ii;
                                         int32_t ss;
@@ -438,7 +439,7 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                                         while((ii) < (hh))
                                         {
                                             ii = ii+1;
-                                            Game__aux_array[ii-1] = Game__to_be_destroyed_i[(gs * 4)+ii-1];
+                                            Game__aux_array[ii] = Game__to_be_destroyed_i[(gs * 4)+ii];
                                             Attack_grid__update_atk_grid(Game__aux_array[ii], Grid_cell__destroyed_ship, to);
                                         }
                                     }
