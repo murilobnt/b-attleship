@@ -31,7 +31,7 @@ static bool Game__ready_i;
 /* Clause INITIALISATION */
 void Game__INITIALISATION(void)
 {
-
+    
     unsigned int i = 0;
     Attack_grid__INITIALISATION();
     Player_ships__INITIALISATION();
@@ -45,7 +45,7 @@ void Game__INITIALISATION(void)
     }
     {
         int32_t ii;
-
+        
         ii = 0;
         Game__ship_health_i[ii] = Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[ii]];
         while((ii) < (20))
@@ -89,7 +89,7 @@ void Game__check_win_condition(Attack_who_ctx__ATTACK_WHO to, bool *rr)
     {
         {
             bool ret;
-
+            
             Player_ships__is_empty_1(&ret);
             if(ret == true)
             {
@@ -105,7 +105,7 @@ void Game__check_win_condition(Attack_who_ctx__ATTACK_WHO to, bool *rr)
     {
         {
             bool ret;
-
+            
             Player_ships__is_empty_2(&ret);
             if(ret == true)
             {
@@ -119,38 +119,46 @@ void Game__check_win_condition(Attack_who_ctx__ATTACK_WHO to, bool *rr)
     }
 }
 
-void Game__unlock_attack(void)
+void Game__unlock_attack(Game__OP_STATUS *rr)
 {
     {
         int32_t ii;
-        bool rr;
-
+        bool vv;
+        
         ii = 0;
-        rr = true;
+        vv = true;
         while(((ii) < (21)) &&
-        (rr == true))
+        (vv == true))
         {
             {
                 bool val;
-
+                
                 val = Game__in_grid[ii];
                 if(((ii) < (21)) &&
                 (val == false))
                 {
-                    rr = false;
+                    vv = false;
                 }
             }
             ii = ii+1;
         }
-        Game__ready_i = rr;
+        Game__ready_i = vv;
+        if(Game__ready_i == true)
+        {
+            (*rr) = Game__success;
+        }
+        else
+        {
+            (*rr) = Game__error;
+        }
     }
 }
 
-void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
+void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp, Game__OP_STATUS *rr)
 {
     {
         bool ig;
-
+        
         ig = Game__in_grid[ii];
         if((Game__ready_i == false) &&
         (ig == false))
@@ -158,7 +166,7 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
             {
                 bool bb;
                 int32_t ss;
-
+                
                 Player_ships__belongs_to_1(ii, &bb);
                 ss = Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[ii]]-1;
                 if(bb == true)
@@ -172,7 +180,7 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                             bool bureak;
                             int32_t boundary;
                             int32_t position;
-
+                            
                             xx = 0;
                             tt = pp;
                             init = tt;
@@ -209,6 +217,11 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                                     xx = xx+1;
                                 }
                                 Game__in_grid[ii] = true;
+                                (*rr) = Game__success;
+                            }
+                            else
+                            {
+                                (*rr) = Game__error;
                             }
                         }
                     }
@@ -221,7 +234,7 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                             bool bureak;
                             int32_t boundary;
                             int32_t position;
-
+                            
                             xx = 0;
                             tt = pp;
                             init = tt;
@@ -258,6 +271,11 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                                     xx = xx+1;
                                 }
                                 Game__in_grid[ii] = true;
+                                (*rr) = Game__success;
+                            }
+                            else
+                            {
+                                (*rr) = Game__error;
                             }
                         }
                     }
@@ -273,7 +291,7 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                             bool bureak;
                             int32_t boundary;
                             int32_t position;
-
+                            
                             xx = 0;
                             tt = pp;
                             init = tt;
@@ -310,6 +328,11 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                                     xx = xx+1;
                                 }
                                 Game__in_grid[ii] = true;
+                                (*rr) = Game__success;
+                            }
+                            else
+                            {
+                                (*rr) = Game__error;
                             }
                         }
                     }
@@ -322,7 +345,7 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                             bool bureak;
                             int32_t boundary;
                             int32_t position;
-
+                            
                             xx = 0;
                             tt = pp;
                             init = tt;
@@ -359,23 +382,32 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                                     xx = xx+1;
                                 }
                                 Game__in_grid[ii] = true;
+                                (*rr) = Game__success;
+                            }
+                            else
+                            {
+                                (*rr) = Game__error;
                             }
                         }
                     }
                 }
             }
         }
+        else
+        {
+            (*rr) = Game__error;
+        }
     }
 }
 
-void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT *rr)
+void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT *rr, Game__OP_STATUS *ll)
 {
     if(Game__ready_i == true)
     {
         {
             bool att;
             int32_t gs;
-
+            
             if(to == Attack_who_ctx__p1)
             {
                 att = Game__attacked1_i[pp];
@@ -386,7 +418,7 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                     {
                         {
                             int32_t sh;
-
+                            
                             sh = Game__ship_health_i[gs];
                             if((sh) > (0))
                             {
@@ -399,7 +431,7 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                                         int32_t ii;
                                         int32_t ss;
                                         int32_t hh;
-
+                                        
                                         ii = 0;
                                         ss = Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[gs]];
                                         hh = ss-1;
@@ -412,6 +444,7 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                                     }
                                     Player_ships__remove_ship_from_1(gs);
                                     Game__grid_to_ship1_i[pp] = Ship_ctx__water_c;
+                                    (*ll) = Game__success;
                                 }
                                 else
                                 {
@@ -419,11 +452,13 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                                     Game__to_be_destroyed_i[(gs * 4)+(Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[gs]]-sh)] = pp;
                                     Attack_grid__update_atk_grid(pp, Grid_cell__ship, to);
                                     Game__grid_to_ship1_i[pp] = Ship_ctx__water_c;
+                                    (*ll) = Game__success;
                                 }
                             }
                             else
                             {
                                 (*rr) = Game__miss;
+                                (*ll) = Game__error;
                             }
                         }
                     }
@@ -431,12 +466,14 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                     {
                         (*rr) = Game__miss;
                         Attack_grid__update_atk_grid(pp, Grid_cell__water, to);
+                        (*ll) = Game__success;
                     }
                     Game__attacked1_i[pp] = true;
                 }
                 else
                 {
                     (*rr) = Game__miss;
+                    (*ll) = Game__error;
                 }
             }
             else
@@ -449,7 +486,7 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                     {
                         {
                             int32_t sh;
-
+                            
                             sh = Game__ship_health_i[gs];
                             if((sh) > (0))
                             {
@@ -462,7 +499,7 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                                         int32_t ii;
                                         int32_t ss;
                                         int32_t hh;
-
+                                        
                                         ii = 0;
                                         ss = Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[gs]];
                                         hh = ss-1;
@@ -475,6 +512,7 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                                     }
                                     Player_ships__remove_ship_from_2(gs);
                                     Game__grid_to_ship2_i[pp] = Ship_ctx__water_c;
+                                    (*ll) = Game__success;
                                 }
                                 else
                                 {
@@ -482,11 +520,13 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                                     Game__to_be_destroyed_i[(gs * 4)+(Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[gs]]-sh)] = pp;
                                     Attack_grid__update_atk_grid(pp, Grid_cell__ship, to);
                                     Game__grid_to_ship2_i[pp] = Ship_ctx__water_c;
+                                    (*ll) = Game__success;
                                 }
                             }
                             else
                             {
                                 (*rr) = Game__miss;
+                                (*ll) = Game__error;
                             }
                         }
                     }
@@ -494,12 +534,14 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                     {
                         (*rr) = Game__miss;
                         Attack_grid__update_atk_grid(pp, Grid_cell__water, to);
+                        (*ll) = Game__success;
                     }
                     Game__attacked2_i[pp] = true;
                 }
                 else
                 {
                     (*rr) = Game__miss;
+                    (*ll) = Game__error;
                 }
             }
         }
@@ -507,5 +549,17 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
     else
     {
         (*rr) = Game__miss;
+        (*ll) = Game__error;
     }
 }
+
+void Game__get_grid_to_ship1(int32_t *rr)
+{
+    memmove(rr,Game__grid_to_ship1_i,(Dimensions_ctx__grid_sz_for_arr+1)* sizeof(int32_t));
+}
+
+void Game__get_grid_to_ship2(int32_t *rr)
+{
+    memmove(rr,Game__grid_to_ship2_i,(Dimensions_ctx__grid_sz_for_arr+1)* sizeof(int32_t));
+}
+

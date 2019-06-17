@@ -7,8 +7,9 @@ void print_attack_grid(Attack_who_ctx__ATTACK_WHO player){
   Grid_cell__CELL ag[Dimensions_ctx__grid_sz_for_arr+1];
   player == Attack_who_ctx__p1 ? Attack_grid__get_attack_grid1(ag) :
                                  Attack_grid__get_attack_grid2(ag);
+   printf("x | 1234567890 |\nx | ---------- |\n");
    for(int i = 0; i < Dimensions_ctx__grid_dim_y; ++i){
-     printf("| ");
+     printf("%d | ", ((i + 1) % 10));
      for(int j = 0; j < Dimensions_ctx__grid_dim_x; ++j){
        if(ag[j + (i * Dimensions_ctx__grid_dim_x)] == Grid_cell__undiscovered)
         printf("-");
@@ -23,15 +24,41 @@ void print_attack_grid(Attack_who_ctx__ATTACK_WHO player){
    }
 }
 
+void print_grid_to_ship(Attack_who_ctx__ATTACK_WHO player){
+  int32_t gts[Dimensions_ctx__grid_sz_for_arr+1];
+  player == Attack_who_ctx__p1 ? Game__get_grid_to_ship1(gts) :
+                                 Game__get_grid_to_ship2(gts);
+   printf("x | 1234567890 |\nx | ---------- |\n");
+   for(int i = 0; i < Dimensions_ctx__grid_dim_y; ++i){
+     printf("%d | ",  ((i + 1) % 10));
+     for(int j = 0; j < Dimensions_ctx__grid_dim_x; ++j){
+       if(gts[j + (i * Dimensions_ctx__grid_dim_x)] == Ship_ctx__water_c){
+         printf("x");
+       } else {
+         if(Ship_ctx__ship_type_r[gts[j + (i * Dimensions_ctx__grid_dim_x)]] == Ship_type_ctx__battleship)
+           printf("e");
+         if(Ship_ctx__ship_type_r[gts[j + (i * Dimensions_ctx__grid_dim_x)]] == Ship_type_ctx__cruiser)
+           printf("c");
+         if(Ship_ctx__ship_type_r[gts[j + (i * Dimensions_ctx__grid_dim_x)]] == Ship_type_ctx__destroyer)
+           printf("d");
+         if(Ship_ctx__ship_type_r[gts[j + (i * Dimensions_ctx__grid_dim_x)]] == Ship_type_ctx__submarine)
+           printf("s");
+       }
+     }
+     printf(" |\n");
+   }
+}
+
 bool game_turn(Attack_who_ctx__ATTACK_WHO player) {
   print_attack_grid(player);
   char who = (player == Attack_who_ctx__p1 ? '1' : '2');
-  printf("Jogador %c, escolha uma posição para atacar (x y).", who);
+  printf("Jogador %c, escolha uma posição para atacar (l), (c).", who);
   int32_t pos1, pos2, pos;
   scanf("%i %i", &pos1, &pos2);
-  pos = (pos1 - 1) + ((pos2 - 1) * 10);
+  pos = (pos2 - 1) + ((pos1 - 1) * 10);
   Game__ATTACK_REPORT result;
-  Game__attack(pos, (player == Attack_who_ctx__p1 ? Attack_who_ctx__p2 : Attack_who_ctx__p1), &result);
+  Game__OP_STATUS status;
+  Game__attack(pos, (player == Attack_who_ctx__p1 ? Attack_who_ctx__p2 : Attack_who_ctx__p1), &result, &status);
   if(result == Game__hit)
     printf("O seu ataque acertou um navio inimigo!");
   if(result == Game__miss)
@@ -48,18 +75,10 @@ bool game_turn(Attack_who_ctx__ATTACK_WHO player) {
   return 0;
 }
 
-void print_grid_to_ship(){
-  for(int i = 0; i < Dimensions_ctx__grid_dim_y; ++i){
-    for(int j = 0; j < Dimensions_ctx__grid_dim_x; ++j){
-      // PRINT_CELL (fazer operação para retornar o grid_to_ship)
-    }
-  }
-}
-
 void position_ships_for_p1(){
   printf("Jogador 1, posicione os seus navios.\n");
   for(int32_t i = 0; i < 10; ++i){
-    // PRINT_GRID_TO_SHIP
+    print_grid_to_ship(Attack_who_ctx__p1);
     if(i == 0){
       printf("Posicionar navio: Encouraçado. Tamanho: 4.\n");
     }
@@ -74,25 +93,26 @@ void position_ships_for_p1(){
     }
 
     int32_t pos1, pos2, pos, horizontal;
-    // do {
-      printf("Escolha uma posição para colocar o navio (x), (y), (0: horizontal, 1: vertical): ");
+    Game__OP_STATUS status;
+    do {
+      printf("Escolha uma posição para colocar o navio (l), (c), (0: horizontal, 1: vertical): ");
       scanf("%i %i %i", &pos1, &pos2, &horizontal);
-      // if(error) printf("Desculpe, você não pode colocar este navio nessa posição.")
-    // } while(error);
-    // ADD_SHIP(i, pos, horizontal);
-    pos = (pos1 - 1) + ((pos2 - 1) * 10);
-    if(!horizontal){
-      Game__add_ship(i, Game__horizontal, pos);
-    } else {
-      Game__add_ship(i, Game__vertical, pos);
-    }
+      pos = (pos2 - 1) + ((pos1 - 1) * 10);
+      if(!horizontal){
+        Game__add_ship(i, Game__horizontal, pos, &status);
+      } else {
+        Game__add_ship(i, Game__vertical, pos, &status);
+      }
+      if(status == Game__error)
+        printf("Desculpe, você não pode colocar este navio nessa posição.\n");
+    } while(status == Game__error);
   }
 }
 
 void position_ships_for_p2() {
   printf("Jogador 2, posicione os seus navios.\n");
   for(int32_t i = 10; i < 20; ++i){
-    // PRINT_GRID_TO_SHIP
+    print_grid_to_ship(Attack_who_ctx__p2);
     if(i == 10){
       printf("Posicionar navio: Encouraçado. Tamanho: 4.\n");
     }
@@ -107,18 +127,19 @@ void position_ships_for_p2() {
     }
 
     int32_t pos1, pos2, pos, horizontal;
-    // do {
-      printf("Escolha uma posição para colocar o navio (x), (y), (0: horizontal, 1: vertical): ");
+    Game__OP_STATUS status;
+    do {
+      printf("Escolha uma posição para colocar o navio (l), (c), (0: horizontal, 1: vertical): ");
       scanf("%i %i %i", &pos1, &pos2, &horizontal);
-      pos = (pos1 - 1) + ((pos2 - 1) * 10);
-      // if(error) printf("Desculpe, você não pode colocar este navio nessa posição.")
-      // Retornar error de Add_ship ou Attack.
-    // } while(error);
-    if(!horizontal){
-      Game__add_ship(i, Game__horizontal, pos);
-    } else {
-      Game__add_ship(i, Game__vertical, pos);
-    }
+      pos = (pos2 - 1) + ((pos1 - 1) * 10);
+      if(!horizontal){
+        Game__add_ship(i, Game__horizontal, pos, &status);
+      } else {
+        Game__add_ship(i, Game__vertical, pos, &status);
+      }
+      if(status == Game__error)
+        printf("Desculpe, você não pode colocar este navio nessa posição.\n");
+    } while(status == Game__error);
   }
 }
 
@@ -127,7 +148,12 @@ int main(){
   Game__INITIALISATION();
   position_ships_for_p1();
   position_ships_for_p2();
-  Game__unlock_attack();
+  Game__OP_STATUS status;
+  Game__unlock_attack(&status);
+  if(status == Game__error){
+    printf("Desculpe, algo deu errado.\n");
+    return 0;
+  }
   while(1){
     if(game_turn(Attack_who_ctx__p1)) break;
     if(game_turn(Attack_who_ctx__p2)) break;
