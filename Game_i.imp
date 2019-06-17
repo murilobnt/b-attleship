@@ -124,82 +124,239 @@ OPERATIONS
     
     add_ship(ii, oo, pp) =
     BEGIN
-        VAR bb, ss IN
-            bb <-- belongs_to_1(ii);
-            ss := ship_size(ship_type_r(ii)) - 1;
-            IF bb = TRUE THEN
-                IF oo = horizontal THEN
-                    VAR xx, tt, init IN
-                    xx := 0;
-                    tt := pp;
-                    init := tt;
-                    grid_to_ship1_i(tt) := ii;
-                    WHILE xx < ss
-                    DO
-                        tt := tt + 1;
-                        grid_to_ship1_i(tt) := ii;
-                        xx := xx + 1
-                    INVARIANT
-                        xx : NAT & xx <= ss & !kk . (kk : init .. tt => grid_to_ship1_i(kk) = ii)
-                    VARIANT
-                        ss - xx
-                    END;
-                    in_grid(ii) := TRUE
-                END
-                ELSE
-                    VAR xx, tt, init IN
-                        xx := 0;
-                        tt := pp;
-                        init := tt;
-                        grid_to_ship1_i(tt) := ii;
-                        WHILE xx < ss
-                        DO
-                            tt := tt + grid_dim_y;
-                            grid_to_ship1_i(tt) := ii;
-                            xx := xx + 1
-                        INVARIANT
-                            xx : NAT & xx <= ss & !kk . (kk : ran(%ll . (ll : 0 .. xx | init + (ll * grid_dim_x))) => grid_to_ship1_i(kk) = ii)
-                        VARIANT
-                            ss - xx
+        IF ready_i = FALSE
+        THEN
+            VAR bb, ss IN
+                bb <-- belongs_to_1(ii);
+                ss := ship_size(ship_type_r(ii)) - 1;
+                IF bb = TRUE THEN
+                    IF oo = horizontal THEN
+                        VAR xx, 
+                            tt, 
+                            init, 
+                            break, 
+                            boundary,
+                            position
+                        IN
+                            xx := 0;
+                            tt := pp;
+                            init := tt;
+                            break := FALSE;
+                            boundary := 0;
+                            position := grid_to_ship1_i(tt);
+                            IF position /= water_c THEN
+                                break := TRUE
+                            END;
+                            WHILE xx < ss & break = FALSE
+                            DO
+                                tt := tt + 1;
+                                xx := xx + 1;
+                                boundary := (pp mod grid_dim_x) + xx;
+                                position := grid_to_ship1_i(tt);
+                                IF position /= water_c or boundary >= grid_dim_x THEN
+                                    break := TRUE
+                                END
+                            INVARIANT
+                                xx : NAT & xx <= ss & 
+                                (break = FALSE <=> 
+                                    !kk . (kk : init .. tt => grid_to_ship1_i(kk) = water_c & 
+                                        (pp mod grid_dim_x) + xx < grid_dim_x))
+                            VARIANT
+                                ss - xx
+                            END;
+                            
+                            IF break = FALSE
+                            THEN
+                                xx := 0;
+                                tt := pp;
+                                init := tt;
+                                grid_to_ship1_i(tt) := ii;
+                                WHILE xx < ss
+                                DO
+                                    tt := tt + 1;
+                                    grid_to_ship1_i(tt) := ii;
+                                    xx := xx + 1
+                                INVARIANT
+                                    xx : NAT & xx <= ss & !kk . (kk : init .. tt => grid_to_ship1_i(kk) = ii)
+                                VARIANT
+                                    ss - xx
+                                END;
+                                in_grid(ii) := TRUE
+                            END
                         END
-                    END;
-                    in_grid(ii) := TRUE
-                END
-            ELSE
-                IF oo = horizontal THEN
-                    VAR xx, tt, init IN
-                    xx := 0;
-                    tt := pp;
-                    init := tt;
-                    grid_to_ship2_i(tt) := ii;
-                    WHILE ii < ss
-                    DO
-                        tt := tt + xx;
-                        xx := xx + 1;
-                        grid_to_ship2_i(tt) := ii 
-                    INVARIANT
-                        xx : NAT & !kk . (kk : init .. tt => grid_to_ship2_i(kk) = ii)
-                    VARIANT
-                        ss - xx
+                    ELSE
+                        VAR xx, 
+                            tt, 
+                            init, 
+                            break, 
+                            boundary, 
+                            position 
+                        IN
+                            xx := 0;
+                            tt := pp;
+                            init := tt;
+                            break := FALSE;
+                            boundary := 0;
+                            position := grid_to_ship1_i(tt);
+                            IF position /= water_c THEN
+                                break := TRUE
+                            END;
+                            
+                            WHILE xx < ss & break = FALSE
+                            DO
+                                tt := tt + grid_dim_y;
+                                xx := xx + 1;
+                                boundary := pp + (xx * grid_dim_y);
+                                position := grid_to_ship1_i(tt);
+                                IF position /= water_c or boundary >= grid_sz THEN
+                                    break := TRUE
+                                END
+                            INVARIANT
+                                xx : NAT & xx <= ss & 
+                                (break = FALSE <=> 
+                                    !kk . (kk : ran(%ll . (ll : 0 .. xx | init + (ll * grid_dim_y))) => grid_to_ship1_i(kk) = water_c & 
+                                        pp + (xx * grid_dim_y) < grid_sz))
+                            VARIANT
+                                ss - xx
+                            END;
+                            
+                            IF break = FALSE
+                                THEN
+                                xx := 0;
+                                tt := pp;
+                                init := tt;
+                                grid_to_ship1_i(tt) := ii;
+                                
+                                WHILE xx < ss
+                                DO
+                                    tt := tt + grid_dim_y;
+                                    grid_to_ship1_i(tt) := ii;
+                                    xx := xx + 1
+                                INVARIANT
+                                    xx : NAT & xx <= ss & 
+                                    !kk . (kk : ran(%ll . (ll : 0 .. xx | init + (ll * grid_dim_x))) => 
+                                        grid_to_ship1_i(kk) = ii)
+                                VARIANT
+                                    ss - xx
+                                END;
+                                in_grid(ii) := TRUE
+                            END
+                        END
                     END
-                END
                 ELSE
-                    VAR xx, tt, init IN
-                    xx := 0;
-                    tt := pp;
-                    init := tt;
-                    grid_to_ship2_i(tt) := ii;
-                    WHILE ii < ss
-                    DO
-                        tt := tt + (xx * grid_dim_y);
-                        xx := xx + 1;
-                        grid_to_ship2_i(tt) := ii 
-                    INVARIANT
-                        xx : NAT & !kk . (kk : ran(%ll . (ll : 0 .. xx | ll * grid_dim_x)) => grid_to_ship2_i(kk) = ii)
-                    VARIANT
-                        ss - xx
+                    IF oo = horizontal THEN
+                        VAR xx, 
+                            tt, 
+                            init, 
+                            break, 
+                            boundary,
+                            position
+                        IN
+                            xx := 0;
+                            tt := pp;
+                            init := tt;
+                            break := FALSE;
+                            boundary := 0;
+                            position := grid_to_ship2_i(tt);
+                            IF position /= water_c THEN
+                                break := TRUE
+                            END;
+                            WHILE xx < ss & break = FALSE
+                            DO
+                                tt := tt + 1;
+                                xx := xx + 1;
+                                boundary := (pp mod grid_dim_x) + xx;
+                                position := grid_to_ship2_i(tt);
+                                IF position /= water_c or boundary >= grid_dim_x THEN
+                                    break := TRUE
+                                END
+                            INVARIANT
+                                xx : NAT & xx <= ss & 
+                                (break = FALSE <=> 
+                                    !kk . (kk : init .. tt => grid_to_ship2_i(kk) = water_c & 
+                                        (pp mod grid_dim_x) + xx < grid_dim_x))
+                            VARIANT
+                                ss - xx
+                            END;
+                            
+                            IF break = FALSE
+                            THEN
+                                xx := 0;
+                                tt := pp;
+                                init := tt;
+                                grid_to_ship2_i(tt) := ii;
+                                WHILE xx < ss
+                                DO
+                                    tt := tt + 1;
+                                    grid_to_ship2_i(tt) := ii;
+                                    xx := xx + 1
+                                INVARIANT
+                                    xx : NAT & xx <= ss & !kk . (kk : init .. tt => grid_to_ship2_i(kk) = ii)
+                                VARIANT
+                                    ss - xx
+                                END;
+                                in_grid(ii) := TRUE
+                            END
+                        END
+                    ELSE
+                        VAR xx, 
+                            tt, 
+                            init, 
+                            break, 
+                            boundary, 
+                            position 
+                        IN
+                            xx := 0;
+                            tt := pp;
+                            init := tt;
+                            break := FALSE;
+                            boundary := 0;
+                            position := grid_to_ship2_i(tt);
+                            IF position /= water_c THEN
+                                break := TRUE
+                            END;
+                            
+                            WHILE xx < ss & break = FALSE
+                            DO
+                                tt := tt + grid_dim_y;
+                                xx := xx + 1;
+                                boundary := pp + (xx * grid_dim_y);
+                                position := grid_to_ship2_i(tt);
+                                IF position /= water_c or boundary >= grid_sz THEN
+                                    break := TRUE
+                                END
+                            INVARIANT
+                                xx : NAT & xx <= ss & 
+                                (break = FALSE <=> 
+                                    !kk . (kk : ran(%ll . (ll : 0 .. xx | init + (ll * grid_dim_y))) => grid_to_ship2_i(kk) = water_c & 
+                                        pp + (xx * grid_dim_y) < grid_sz))
+                            VARIANT
+                                ss - xx
+                            END;
+                            
+                            IF break = FALSE
+                                THEN
+                                xx := 0;
+                                tt := pp;
+                                init := tt;
+                                grid_to_ship2_i(tt) := ii;
+                                
+                                WHILE xx < ss
+                                DO
+                                    tt := tt + grid_dim_y;
+                                    grid_to_ship2_i(tt) := ii;
+                                    xx := xx + 1
+                                INVARIANT
+                                    xx : NAT & xx <= ss & 
+                                    !kk . (kk : ran(%ll . (ll : 0 .. xx | init + (ll * grid_dim_x))) => 
+                                        grid_to_ship2_i(kk) = ii)
+                                VARIANT
+                                    ss - xx
+                                END;
+                                in_grid(ii) := TRUE
+                            END
+                        END
                     END
-                END
                 END
             END
         END

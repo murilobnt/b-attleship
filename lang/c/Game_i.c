@@ -148,92 +148,213 @@ void Game__unlock_attack(void)
 
 void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
 {
+    if(Game__ready_i == false)
     {
-        bool bb;
-        int32_t ss;
-        
-        Player_ships__belongs_to_1(ii, &bb);
-        ss = Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[ii]]-1;
-        if(bb == true)
         {
-            if(oo == Game__horizontal)
+            bool bb;
+            int32_t ss;
+            
+            Player_ships__belongs_to_1(ii, &bb);
+            ss = Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[ii]]-1;
+            if(bb == true)
             {
+                if(oo == Game__horizontal)
                 {
-                    int32_t xx;
-                    int32_t tt;
-                    int32_t init;
-                    
-                    xx = 0;
-                    tt = pp;
-                    init = tt;
-                    Game__grid_to_ship1_i[tt] = ii;
-                    while((xx) < (ss))
                     {
-                        tt = tt+1;
-                        Game__grid_to_ship1_i[tt] = ii;
-                        xx = xx+1;
+                        int32_t xx;
+                        int32_t tt;
+                        int32_t init;
+                        bool break;
+                        int32_t boundary;
+                        int32_t position;
+                        
+                        xx = 0;
+                        tt = pp;
+                        init = tt;
+                        break = false;
+                        boundary = 0;
+                        position = Game__grid_to_ship1_i[tt];
+                        if((position) != (Ship_ctx__water_c))
+                        {
+                            break = true;
+                        }
+                        while(((xx) < (ss)) &&
+                        (break == false))
+                        {
+                            tt = tt+1;
+                            xx = xx+1;
+                            boundary = (pp % Dimensions_ctx__grid_dim_x)+xx;
+                            position = Game__grid_to_ship1_i[tt];
+                            if(((position) != (Ship_ctx__water_c)) ||
+                            ((boundary) >= (Dimensions_ctx__grid_dim_x)))
+                            {
+                                break = true;
+                            }
+                        }
+                        if(break == false)
+                        {
+                            xx = 0;
+                            tt = pp;
+                            init = tt;
+                            Game__grid_to_ship1_i[tt] = ii;
+                            while((xx) < (ss))
+                            {
+                                tt = tt+1;
+                                Game__grid_to_ship1_i[tt] = ii;
+                                xx = xx+1;
+                            }
+                            Game__in_grid[ii] = true;
+                        }
                     }
-                    Game__in_grid[ii] = true;
+                }
+                else
+                {
+                    {
+                        int32_t xx;
+                        int32_t tt;
+                        int32_t init;
+                        bool break;
+                        int32_t boundary;
+                        int32_t position;
+                        
+                        xx = 0;
+                        tt = pp;
+                        init = tt;
+                        break = false;
+                        boundary = 0;
+                        position = Game__grid_to_ship1_i[tt];
+                        if((position) != (Ship_ctx__water_c))
+                        {
+                            break = true;
+                        }
+                        while(((xx) < (ss)) &&
+                        (break == false))
+                        {
+                            tt = tt+Dimensions_ctx__grid_dim_y;
+                            xx = xx+1;
+                            boundary = pp+(xx * Dimensions_ctx__grid_dim_y);
+                            position = Game__grid_to_ship1_i[tt];
+                            if(((position) != (Ship_ctx__water_c)) ||
+                            ((boundary) >= (Dimensions_ctx__grid_sz)))
+                            {
+                                break = true;
+                            }
+                        }
+                        if(break == false)
+                        {
+                            xx = 0;
+                            tt = pp;
+                            init = tt;
+                            Game__grid_to_ship1_i[tt] = ii;
+                            while((xx) < (ss))
+                            {
+                                tt = tt+Dimensions_ctx__grid_dim_y;
+                                Game__grid_to_ship1_i[tt] = ii;
+                                xx = xx+1;
+                            }
+                            Game__in_grid[ii] = true;
+                        }
+                    }
                 }
             }
             else
             {
+                if(oo == Game__horizontal)
                 {
-                    int32_t xx;
-                    int32_t tt;
-                    int32_t init;
-                    
-                    xx = 0;
-                    tt = pp;
-                    init = tt;
-                    Game__grid_to_ship1_i[tt] = ii;
-                    while((xx) < (ss))
                     {
-                        tt = tt+Dimensions_ctx__grid_dim_y;
-                        Game__grid_to_ship1_i[tt] = ii;
-                        xx = xx+1;
+                        int32_t xx;
+                        int32_t tt;
+                        int32_t init;
+                        bool break;
+                        int32_t boundary;
+                        int32_t position;
+                        
+                        xx = 0;
+                        tt = pp;
+                        init = tt;
+                        break = false;
+                        boundary = 0;
+                        position = Game__grid_to_ship2_i[tt];
+                        if((position) != (Ship_ctx__water_c))
+                        {
+                            break = true;
+                        }
+                        while(((xx) < (ss)) &&
+                        (break == false))
+                        {
+                            tt = tt+1;
+                            xx = xx+1;
+                            boundary = (pp % Dimensions_ctx__grid_dim_x)+xx;
+                            position = Game__grid_to_ship2_i[tt];
+                            if(((position) != (Ship_ctx__water_c)) ||
+                            ((boundary) >= (Dimensions_ctx__grid_dim_x)))
+                            {
+                                break = true;
+                            }
+                        }
+                        if(break == false)
+                        {
+                            xx = 0;
+                            tt = pp;
+                            init = tt;
+                            Game__grid_to_ship2_i[tt] = ii;
+                            while((xx) < (ss))
+                            {
+                                tt = tt+1;
+                                Game__grid_to_ship2_i[tt] = ii;
+                                xx = xx+1;
+                            }
+                            Game__in_grid[ii] = true;
+                        }
                     }
                 }
-                Game__in_grid[ii] = true;
-            }
-        }
-        else
-        {
-            if(oo == Game__horizontal)
-            {
+                else
                 {
-                    int32_t xx;
-                    int32_t tt;
-                    int32_t init;
-                    
-                    xx = 0;
-                    tt = pp;
-                    init = tt;
-                    Game__grid_to_ship2_i[tt] = ii;
-                    while((ii) < (ss))
                     {
-                        tt = tt+xx;
-                        xx = xx+1;
-                        Game__grid_to_ship2_i[tt] = ii;
-                    }
-                }
-            }
-            else
-            {
-                {
-                    int32_t xx;
-                    int32_t tt;
-                    int32_t init;
-                    
-                    xx = 0;
-                    tt = pp;
-                    init = tt;
-                    Game__grid_to_ship2_i[tt] = ii;
-                    while((ii) < (ss))
-                    {
-                        tt = tt+(xx * Dimensions_ctx__grid_dim_y);
-                        xx = xx+1;
-                        Game__grid_to_ship2_i[tt] = ii;
+                        int32_t xx;
+                        int32_t tt;
+                        int32_t init;
+                        bool break;
+                        int32_t boundary;
+                        int32_t position;
+                        
+                        xx = 0;
+                        tt = pp;
+                        init = tt;
+                        break = false;
+                        boundary = 0;
+                        position = Game__grid_to_ship2_i[tt];
+                        if((position) != (Ship_ctx__water_c))
+                        {
+                            break = true;
+                        }
+                        while(((xx) < (ss)) &&
+                        (break == false))
+                        {
+                            tt = tt+Dimensions_ctx__grid_dim_y;
+                            xx = xx+1;
+                            boundary = pp+(xx * Dimensions_ctx__grid_dim_y);
+                            position = Game__grid_to_ship2_i[tt];
+                            if(((position) != (Ship_ctx__water_c)) ||
+                            ((boundary) >= (Dimensions_ctx__grid_sz)))
+                            {
+                                break = true;
+                            }
+                        }
+                        if(break == false)
+                        {
+                            xx = 0;
+                            tt = pp;
+                            init = tt;
+                            Game__grid_to_ship2_i[tt] = ii;
+                            while((xx) < (ss))
+                            {
+                                tt = tt+Dimensions_ctx__grid_dim_y;
+                                Game__grid_to_ship2_i[tt] = ii;
+                                xx = xx+1;
+                            }
+                            Game__in_grid[ii] = true;
+                        }
                     }
                 }
             }
