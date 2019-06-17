@@ -28,12 +28,13 @@ CONCRETE_VARIABLES
     attacked1_i,
     attacked2_i,
     to_be_destroyed_i,
+    aux_array,
     ready_i
     
 INVARIANT
     ship_health_i : 0..20 --> 0..4 &
-    grid_to_ship1_i : 0..grid_sz_for_arr --> 0..9 &
-    grid_to_ship2_i : 0..grid_sz_for_arr --> 10..19 &
+    grid_to_ship1_i : 0..grid_sz_for_arr --> 0..20 &
+    grid_to_ship2_i : 0..grid_sz_for_arr --> 10..20 &
     attacked1_i : 0..grid_sz_for_arr --> BOOL &
     attacked2_i : 0..grid_sz_for_arr --> BOOL &
     to_be_destroyed_i : 0..80 --> 0..grid_sz_for_arr &
@@ -44,18 +45,20 @@ INVARIANT
     attacked1_i = attacked1 &
     attacked2_i = attacked2 &
     !xx . (xx : dom(to_be_destroyed) => !yy . (yy : to_be_destroyed[{xx}] => yy : ran(to_be_destroyed_i))) &
+    aux_array : 0 .. 4 --> 0 .. grid_sz_for_arr &
     ready_i = ready
     
 INITIALISATION
+    ship_health_i := (0..20) * {0};
     VAR ii IN
         ii := 0;
         ship_health_i(ii) := ship_size(ship_type_r(ii));
         WHILE ii < 20
         DO
-            ii := ii + 1;
-            ship_health_i(ii) := ship_size(ship_type_r(ii))
+            ship_health_i(ii) := ship_size(ship_type_r(ii));
+            ii := ii + 1
         INVARIANT
-            ii : NAT & 0..ii <| ship_health_i = %xx . (xx : 0..20 | ship_size(ship_type_r(xx)))
+            ii : NAT & 0..ii - 1 <| ship_health_i = %xx . (xx : 0..ii - 1 | ship_size(ship_type_r(xx)))
         VARIANT
             20 - ii
         END
@@ -65,6 +68,7 @@ INITIALISATION
     attacked1_i := (0..grid_sz_for_arr) * {FALSE};
     attacked2_i := (0..grid_sz_for_arr) * {FALSE};
     to_be_destroyed_i := (0..80) * {0};
+    aux_array := (0..4) * {0};
     ready_i := FALSE
     
 OPERATIONS
@@ -105,13 +109,13 @@ OPERATIONS
                     tt := pp;
                     init := tt;
                     grid_to_ship1_i(tt) := ii;
-                    WHILE ii < ss
+                    WHILE xx < ss
                     DO
-                        tt := tt + xx;
-                        xx := xx + 1;
-                        grid_to_ship1_i(tt) := ii 
+                        tt := tt + 1;
+                        grid_to_ship1_i(tt) := ii;
+                        xx := xx + 1
                     INVARIANT
-                        xx : NAT & !kk . (kk : init .. tt => grid_to_ship1_i(kk) = ii)
+                        xx : NAT & xx <= ss & !kk . (kk : init .. tt => grid_to_ship1_i(kk) = ii)
                     VARIANT
                         ss - xx
                     END
@@ -122,13 +126,13 @@ OPERATIONS
                     tt := pp;
                     init := tt;
                     grid_to_ship1_i(tt) := ii;
-                    WHILE ii < ss
+                    WHILE xx < ss
                     DO
-                        tt := tt + (xx * grid_dim_y);
-                        xx := xx + 1;
-                        grid_to_ship1_i(tt) := ii 
+                        tt := tt + grid_dim_y;
+                        grid_to_ship1_i(tt) := ii;
+                        xx := xx + 1
                     INVARIANT
-                        xx : NAT & !kk . (kk : ran(%ll . (ll : 0 .. xx | ll * grid_dim_x)) => grid_to_ship1_i(kk) = ii)
+                        xx : NAT & xx <= ss & !kk . (kk : ran(%ll . (ll : 0 .. xx | init + (ll * grid_dim_x))) => grid_to_ship1_i(kk) = ii)
                     VARIANT
                         ss - xx
                     END
@@ -185,25 +189,30 @@ OPERATIONS
             VAR gs IN
                 gs := grid_to_ship1_i(pp);
                 IF gs /= water_c THEN
-                    ship_health_i(grid_to_ship1_i(pp)) := ship_health_i(grid_to_ship1_i(pp)) - 1;
+                    ship_health_i(gs) := ship_health_i(gs) - 1;
                     VAR sh IN
-                        sh := ship_health_i(grid_to_ship1_i(pp));
+                        sh := ship_health_i(gs);
                         IF sh = 0 THEN
                             rr := destroyed;
-    //                    LET ss_boundary BE ss_boundary = ship_size(ship_type_r(grid_to_ship1(pp))) - 1 IN
-    //                        ANY dd WHERE dd : 0..ss_boundary --> 0 .. grid_sz_for_arr & 
-    //                            ran(dd) = to_be_destroyed[{grid_to_ship1(pp)}] \/ {pp}
-    //                        THEN
-    //                            LET sz BE sz = ship_size(ship_type_r(grid_to_ship1(pp))) - 1 IN
-    //                                update_atk_grid_for_destroyed_ship(dd, to, sz)
-    //                            END
-    //                        END
-    //                    END;
-                            grid_to_ship1_i(pp) := water_c;
-                            remove_ship_from_1(grid_to_ship1_i(pp))
+                            VAR ii, ss IN
+                                ii := 0;
+                                ss := ship_size(ship_type_r(gs));
+                                WHILE ii < ss
+                                DO 
+                                    aux_array(ii) := to_be_destroyed_i((gs * 4) + ii);
+                                    update_atk_grid(aux_array(ii), destroyed_ship, to);
+                                    ii := ii + 1
+                                INVARIANT ii : NAT & 
+                                    ii <= ss &
+                                    0..ii <| aux_array = (gs * 4) .. ((gs * 4) + ii) <| to_be_destroyed_i
+                                VARIANT ss - ii
+                                END 
+                            END;
+                            remove_ship_from_1(gs);
+                            grid_to_ship1_i(pp) := water_c
                         ELSE
                             rr := hit;
-                            to_be_destroyed_i((grid_to_ship1_i(pp) * 4) + (ship_size(ship_type_r(grid_to_ship1_i(pp))) - sh)) := pp;
+                            to_be_destroyed_i((gs * 4) + (ship_size(ship_type_r(gs)) - sh)) := pp;
                             update_atk_grid(pp, ship, to);
                             grid_to_ship1_i(pp) := water_c
                         END
@@ -218,31 +227,36 @@ OPERATIONS
             VAR gs IN
                 gs := grid_to_ship2_i(pp);
                 IF gs /= water_c THEN
-                    ship_health_i(grid_to_ship2_i(pp)) := ship_health_i(grid_to_ship2_i(pp)) - 1;
+                    ship_health_i(gs) := ship_health_i(gs) - 1;
                     VAR sh IN
-                        sh := ship_health_i(grid_to_ship2_i(pp));
+                        sh := ship_health_i(gs);
                         IF sh = 0 THEN
-                            rr := destroyed; 
-//                    LET ss_boundary BE ss_boundary = ship_size(ship_type_r(grid_to_ship2(pp))) - 1 IN
-//                        ANY dd WHERE dd : 0..ss_boundary --> 0 .. grid_sz_for_arr & 
-//                            ran(dd) = to_be_destroyed[{grid_to_ship2(pp)}] \/ {pp}
-//                        THEN
-//                            LET sz BE sz = ship_size(ship_type_r(grid_to_ship2(pp))) - 1 IN
-//                                update_atk_grid_for_destroyed_ship(dd, to, sz)
-//                            END
-//                        END
-//                    END;
-                            grid_to_ship2_i(pp) := water_c;
-                            remove_ship_from_2(grid_to_ship2_i(pp))
+                            rr := destroyed;
+                            VAR ii, ss IN
+                                ii := 0;
+                                ss := ship_size(ship_type_r(gs));
+                                WHILE ii < ss
+                                DO 
+                                    aux_array(ii) := to_be_destroyed_i((gs * 4) + ii);
+                                    update_atk_grid(aux_array(ii), destroyed_ship, to);
+                                    ii := ii + 1
+                                INVARIANT ii : NAT & 
+                                    ii <= ss &
+                                    0..ii <| aux_array = (gs * 4) .. ((gs * 4) + ii) <| to_be_destroyed_i
+                                VARIANT ss - ii
+                                END
+                            END;
+                            remove_ship_from_2(gs);
+                            grid_to_ship2_i(pp) := water_c
                         ELSE
                             rr := hit;
-                            to_be_destroyed_i((grid_to_ship2_i(pp) * 4) + (ship_size(ship_type_r(grid_to_ship2_i(pp))) - sh)) := pp;
+                            to_be_destroyed_i((gs * 4) + (ship_size(ship_type_r(gs)) - sh)) := pp;
                             update_atk_grid(pp, ship, to);
                             grid_to_ship2_i(pp) := water_c
                         END
                     END
                 ELSE
-                    rr := miss; 
+                    rr := miss;
                     update_atk_grid(pp, water, to)
                 END
             END;
