@@ -386,6 +386,8 @@ OPERATIONS
     
     rr, ll <-- attack(pp, to) = 
     BEGIN
+        IF ready_i = TRUE
+        THEN
             VAR att, gs IN
                 IF to = p1 
                 THEN
@@ -502,6 +504,10 @@ OPERATIONS
                     END
                 END
             END
+        ELSE
+            rr := miss;
+            ll := error
+        END
     END;
     
     rr <-- get_grid_to_ship1 = rr := grid_to_ship1_i;
