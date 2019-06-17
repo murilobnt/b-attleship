@@ -5,8 +5,8 @@
 
 void print_attack_grid(Attack_who_ctx__ATTACK_WHO player){
   Grid_cell__CELL ag[Dimensions_ctx__grid_sz_for_arr+1];
-  player == Attack_who_ctx__p1 ? Attack_grid__get_attack_grid1(ag) :
-                                 Attack_grid__get_attack_grid2(ag);
+  player == Attack_who_ctx__p1 ? Attack_grid__get_attack_grid2(ag) :
+                                 Attack_grid__get_attack_grid1(ag);
    printf("x | 1234567890 |\nx | ---------- |\n");
    for(int i = 0; i < Dimensions_ctx__grid_dim_y; ++i){
      printf("%d | ", ((i + 1) % 10));
@@ -52,7 +52,7 @@ void print_grid_to_ship(Attack_who_ctx__ATTACK_WHO player){
 bool game_turn(Attack_who_ctx__ATTACK_WHO player) {
   print_attack_grid(player);
   char who = (player == Attack_who_ctx__p1 ? '1' : '2');
-  printf("Jogador %c, escolha uma posição para atacar (l), (c).", who);
+  printf("Jogador %c, escolha uma posição para atacar (l), (c). ", who);
   int32_t pos1, pos2, pos;
   scanf("%i %i", &pos1, &pos2);
   pos = (pos2 - 1) + ((pos1 - 1) * 10);
@@ -60,14 +60,14 @@ bool game_turn(Attack_who_ctx__ATTACK_WHO player) {
   Game__OP_STATUS status;
   Game__attack(pos, (player == Attack_who_ctx__p1 ? Attack_who_ctx__p2 : Attack_who_ctx__p1), &result, &status);
   if(result == Game__hit)
-    printf("O seu ataque acertou um navio inimigo!");
+    printf("O seu ataque acertou um navio inimigo!\n");
   if(result == Game__miss)
-    printf("O seu ataque não acertou nenhum navio inimigo.");
+    printf("O seu ataque não acertou nenhum navio inimigo.\n");
   if(result == Game__destroyed)
-    printf("O seu ataque destruiu um navio inimigo!");
+    printf("O seu ataque destruiu um navio inimigo!\n");
 
   bool win;
-  Game__check_win_condition(player, &win);
+  Game__check_win_condition(player == Attack_who_ctx__p1 ? Attack_who_ctx__p2 : Attack_who_ctx__p1, &win);
   if(win){
      printf("O jogador %c venceu!", who);
      return 1;
