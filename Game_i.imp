@@ -25,6 +25,7 @@ CONCRETE_VARIABLES
     ship_health_i,
     grid_to_ship1_i,
     grid_to_ship2_i,
+    in_grid,
     attacked1_i,
     attacked2_i,
     to_be_destroyed_i,
@@ -35,6 +36,7 @@ INVARIANT
     ship_health_i : 0..20 --> 0..4 &
     grid_to_ship1_i : 0..grid_sz_for_arr --> 0..20 &
     grid_to_ship2_i : 0..grid_sz_for_arr --> 10..20 &
+    in_grid : 0..19 --> BOOL &
     attacked1_i : 0..grid_sz_for_arr --> BOOL &
     attacked2_i : 0..grid_sz_for_arr --> BOOL &
     to_be_destroyed_i : 0..80 --> 0..grid_sz_for_arr &
@@ -50,6 +52,7 @@ INVARIANT
     
 INITIALISATION
     ship_health_i := (0..20) * {0};
+    in_grid := (0..19) * {FALSE};
     VAR ii IN
         ii := 0;
         ship_health_i(ii) := ship_size(ship_type_r(ii));
@@ -97,6 +100,28 @@ OPERATIONS
         END
     END;
     
+    unlock_attack =
+    BEGIN
+        VAR ii, rr IN
+            ii := 0;
+            rr := TRUE;
+            WHILE ii < 21 & rr = TRUE
+            DO
+                VAR val IN
+                    val := in_grid(ii);
+                    IF ii < 21 & val = FALSE
+                    THEN
+                        rr := FALSE
+                    END
+                END;
+                ii := ii + 1
+            INVARIANT ii : NAT & ii <= 11 & (rr = TRUE <=> !xx.(xx : 0 .. ii - 1 => in_grid(xx) = TRUE))
+            VARIANT 11 - ii
+            END;
+            ready_i := rr
+        END
+    END;
+    
     add_ship(ii, oo, pp) =
     BEGIN
         VAR bb, ss IN
@@ -118,25 +143,27 @@ OPERATIONS
                         xx : NAT & xx <= ss & !kk . (kk : init .. tt => grid_to_ship1_i(kk) = ii)
                     VARIANT
                         ss - xx
-                    END
+                    END;
+                    in_grid(ii) := TRUE
                 END
                 ELSE
                     VAR xx, tt, init IN
-                    xx := 0;
-                    tt := pp;
-                    init := tt;
-                    grid_to_ship1_i(tt) := ii;
-                    WHILE xx < ss
-                    DO
-                        tt := tt + grid_dim_y;
+                        xx := 0;
+                        tt := pp;
+                        init := tt;
                         grid_to_ship1_i(tt) := ii;
-                        xx := xx + 1
-                    INVARIANT
-                        xx : NAT & xx <= ss & !kk . (kk : ran(%ll . (ll : 0 .. xx | init + (ll * grid_dim_x))) => grid_to_ship1_i(kk) = ii)
-                    VARIANT
-                        ss - xx
-                    END
-                END
+                        WHILE xx < ss
+                        DO
+                            tt := tt + grid_dim_y;
+                            grid_to_ship1_i(tt) := ii;
+                            xx := xx + 1
+                        INVARIANT
+                            xx : NAT & xx <= ss & !kk . (kk : ran(%ll . (ll : 0 .. xx | init + (ll * grid_dim_x))) => grid_to_ship1_i(kk) = ii)
+                        VARIANT
+                            ss - xx
+                        END
+                    END;
+                    in_grid(ii) := TRUE
                 END
             ELSE
                 IF oo = horizontal THEN
@@ -178,11 +205,6 @@ OPERATIONS
         END
     END;
     
-    unlock_attack =
-    BEGIN
-        ready_i := TRUE
-    END;
-    
     rr <-- attack(pp, to) = 
     BEGIN
         IF to = p1 THEN
@@ -194,17 +216,18 @@ OPERATIONS
                         sh := ship_health_i(gs);
                         IF sh = 0 THEN
                             rr := destroyed;
-                            VAR ii, ss IN
+                            VAR ii, ss, hh IN
                                 ii := 0;
                                 ss := ship_size(ship_type_r(gs));
-                                WHILE ii < ss
+                                hh := ss - 1;
+                                WHILE ii < hh
                                 DO 
-                                    aux_array(ii) := to_be_destroyed_i((gs * 4) + ii);
-                                    update_atk_grid(aux_array(ii), destroyed_ship, to);
-                                    ii := ii + 1
+                                    ii := ii + 1;
+                                    aux_array(ii - 1) := to_be_destroyed_i((gs * 4) + ii - 1);
+                                    update_atk_grid(aux_array(ii), destroyed_ship, to)
                                 INVARIANT ii : NAT & 
                                     ii <= ss &
-                                    0..ii <| aux_array = (gs * 4) .. ((gs * 4) + ii) <| to_be_destroyed_i
+                                    0..ii - 1 <| aux_array = (gs * 4) .. ((gs * 4) + ii - 1) <| to_be_destroyed_i
                                 VARIANT ss - ii
                                 END 
                             END;
@@ -232,17 +255,18 @@ OPERATIONS
                         sh := ship_health_i(gs);
                         IF sh = 0 THEN
                             rr := destroyed;
-                            VAR ii, ss IN
+                            VAR ii, ss, hh IN
                                 ii := 0;
                                 ss := ship_size(ship_type_r(gs));
-                                WHILE ii < ss
+                                hh := ss - 1;
+                                WHILE ii < hh
                                 DO 
-                                    aux_array(ii) := to_be_destroyed_i((gs * 4) + ii);
-                                    update_atk_grid(aux_array(ii), destroyed_ship, to);
-                                    ii := ii + 1
+                                    ii := ii + 1;
+                                    aux_array(ii - 1) := to_be_destroyed_i((gs * 4) + ii - 1);
+                                    update_atk_grid(aux_array(ii), destroyed_ship, to)
                                 INVARIANT ii : NAT & 
                                     ii <= ss &
-                                    0..ii <| aux_array = (gs * 4) .. ((gs * 4) + ii) <| to_be_destroyed_i
+                                    0..ii - 1 <| aux_array = (gs * 4) .. ((gs * 4) + ii - 1) <| to_be_destroyed_i
                                 VARIANT ss - ii
                                 END
                             END;

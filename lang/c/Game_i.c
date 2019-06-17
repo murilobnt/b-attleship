@@ -22,6 +22,7 @@
 static int32_t Game__ship_health_i[21];
 static int32_t Game__grid_to_ship1_i[Dimensions_ctx__grid_sz_for_arr+1];
 static int32_t Game__grid_to_ship2_i[Dimensions_ctx__grid_sz_for_arr+1];
+static bool Game__in_grid[20];
 static bool Game__attacked1_i[Dimensions_ctx__grid_sz_for_arr+1];
 static bool Game__attacked2_i[Dimensions_ctx__grid_sz_for_arr+1];
 static int32_t Game__to_be_destroyed_i[81];
@@ -37,6 +38,10 @@ void Game__INITIALISATION(void)
     for(i = 0; i <= 20;i++)
     {
         Game__ship_health_i[i] = 0;
+    }
+    for(i = 0; i <= 19;i++)
+    {
+        Game__in_grid[i] = false;
     }
     {
         int32_t ii;
@@ -114,6 +119,33 @@ void Game__check_win_condition(Attack_who_ctx__ATTACK_WHO to, bool *rr)
     }
 }
 
+void Game__unlock_attack(void)
+{
+    {
+        int32_t ii;
+        bool rr;
+        
+        ii = 0;
+        rr = true;
+        while(((ii) < (21)) &&
+        (rr == true))
+        {
+            {
+                bool val;
+                
+                val = Game__in_grid[ii];
+                if(((ii) < (21)) &&
+                (val == false))
+                {
+                    rr = false;
+                }
+            }
+            ii = ii+1;
+        }
+        Game__ready_i = rr;
+    }
+}
+
 void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
 {
     {
@@ -141,6 +173,7 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                         Game__grid_to_ship1_i[tt] = ii;
                         xx = xx+1;
                     }
+                    Game__in_grid[ii] = true;
                 }
             }
             else
@@ -161,6 +194,7 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
                         xx = xx+1;
                     }
                 }
+                Game__in_grid[ii] = true;
             }
         }
         else
@@ -207,11 +241,6 @@ void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp)
     }
 }
 
-void Game__unlock_attack(void)
-{
-    Game__ready_i = true;
-}
-
 void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT *rr)
 {
     if(to == Attack_who_ctx__p1)
@@ -233,14 +262,16 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                         {
                             int32_t ii;
                             int32_t ss;
+                            int32_t hh;
                             
                             ii = 0;
                             ss = Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[gs]];
-                            while((ii) < (ss))
+                            hh = ss-1;
+                            while((ii) < (hh))
                             {
-                                Game__aux_array[ii] = Game__to_be_destroyed_i[(gs * 4)+ii];
-                                Attack_grid__update_atk_grid(Game__aux_array[ii], Grid_cell__destroyed_ship, to);
                                 ii = ii+1;
+                                Game__aux_array[ii-1] = Game__to_be_destroyed_i[(gs * 4)+ii-1];
+                                Attack_grid__update_atk_grid(Game__aux_array[ii], Grid_cell__destroyed_ship, to);
                             }
                         }
                         Player_ships__remove_ship_from_1(gs);
@@ -282,14 +313,16 @@ void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT
                         {
                             int32_t ii;
                             int32_t ss;
+                            int32_t hh;
                             
                             ii = 0;
                             ss = Ship_type_ctx__ship_size[Ship_ctx__ship_type_r[gs]];
-                            while((ii) < (ss))
+                            hh = ss-1;
+                            while((ii) < (hh))
                             {
-                                Game__aux_array[ii] = Game__to_be_destroyed_i[(gs * 4)+ii];
-                                Attack_grid__update_atk_grid(Game__aux_array[ii], Grid_cell__destroyed_ship, to);
                                 ii = ii+1;
+                                Game__aux_array[ii-1] = Game__to_be_destroyed_i[(gs * 4)+ii-1];
+                                Attack_grid__update_atk_grid(Game__aux_array[ii], Grid_cell__destroyed_ship, to);
                             }
                         }
                         Player_ships__remove_ship_from_2(gs);
