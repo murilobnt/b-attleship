@@ -22,7 +22,8 @@ SEES
 
 SETS
     ORIENTATION = {vertical, horizontal};
-    ATTACK_REPORT = {hit, miss, destroyed}
+    ATTACK_REPORT = {hit, miss, destroyed};
+    OP_STATUS = {success, error}
 
 VARIABLES
     ship_health,
@@ -69,7 +70,7 @@ OPERATIONS
         END
     END;
     
-    add_ship(ii, oo, pp) =
+    rr <-- add_ship(ii, oo, pp) =
     PRE ii : 0..19 &
         oo : ORIENTATION &
         ready = FALSE & 
@@ -106,17 +107,18 @@ OPERATIONS
                     grid_to_ship2 := grid_to_ship2 <+ (vv * {ii})
                 END
             END
-        END
+        END ||
+        rr := success
     END;
 
-    unlock_attack =
+    rr <-- unlock_attack =
     PRE !xx . (xx : (ships1 - {water_c}) => xx : ran(grid_to_ship1)) &
              !xx . (xx : (ships2 - {water_c}) => xx : ran(grid_to_ship2)) &
              ready = FALSE THEN
-        ready := TRUE
+        ready := TRUE || rr := success
     END;
     
-    rr <-- attack(pp, to) =
+    rr, ll <-- attack(pp, to) =
     PRE pp : 0..grid_sz_for_arr & ready = TRUE &
         to : ATTACK_WHO &
         (to = p1 => attacked1(pp) = FALSE & 
@@ -176,7 +178,11 @@ OPERATIONS
                 rr := miss || update_atk_grid(pp, water, to)
             END ||
             attacked2(pp) := TRUE
-        END
-    END
-
+        END ||
+        ll := success
+    END;
+    
+    rr <-- get_grid_to_ship1 = rr := grid_to_ship1;
+    
+    rr <-- get_grid_to_ship2 = rr := grid_to_ship2
 END

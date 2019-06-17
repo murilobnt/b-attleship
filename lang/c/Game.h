@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 /* Clause SEES */
 #include "Ship_ctx.h"
 #include "Dimensions_ctx.h"
@@ -41,6 +42,13 @@ typedef enum
     
 } Game__ATTACK_REPORT;
 #define Game__ATTACK_REPORT__max 3
+typedef enum
+{
+    Game__success,
+    Game__error
+    
+} Game__OP_STATUS;
+#define Game__OP_STATUS__max 2
 
 /* Clause CONCRETE_VARIABLES */
 
@@ -53,9 +61,11 @@ extern void Game__INITIALISATION(void);
 /* Clause OPERATIONS */
 
 extern void Game__check_win_condition(Attack_who_ctx__ATTACK_WHO to, bool *rr);
-extern void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp);
-extern void Game__unlock_attack(void);
-extern void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT *rr);
+extern void Game__add_ship(int32_t ii, Game__ORIENTATION oo, int32_t pp, Game__OP_STATUS *rr);
+extern void Game__unlock_attack(Game__OP_STATUS *rr);
+extern void Game__attack(int32_t pp, Attack_who_ctx__ATTACK_WHO to, Game__ATTACK_REPORT *rr, Game__OP_STATUS *ll);
+extern void Game__get_grid_to_ship1(int32_t *rr);
+extern void Game__get_grid_to_ship2(int32_t *rr);
 
 #ifdef __cplusplus
 }
